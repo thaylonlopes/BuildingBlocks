@@ -12,7 +12,7 @@ namespace CommonHelpers.Messaging
     /// </remarks>
     /// <example>
     /// <code>
-    /// var metadata = new EventMetadata()
+    /// var metadata = EventMetadata.Empty
     ///     .WithKafkaPartitionKey("cliente-123")
     ///     .WithRabbitMqRoutingKey("pedidos.criados")
     ///     .WithHeader("tenant-id", "corp-01");
@@ -20,6 +20,11 @@ namespace CommonHelpers.Messaging
     /// </example>
     public class EventMetadata
     {
+        /// <summary>
+        /// Obtém uma nova instância limpa de <see cref="EventMetadata"/>.
+        /// </summary>
+        public static EventMetadata Empty => new();
+
         /// <summary>
         /// Chave de roteamento usada primariamente pelo RabbitMQ (Routing Key / Binding Key) ou Kafka (Tópico alternativo).
         /// </summary>
@@ -99,4 +104,3 @@ namespace CommonHelpers.Messaging
         }
     }
 }
-

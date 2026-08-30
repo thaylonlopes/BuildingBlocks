@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\CommonHelpers.RequestResponse\CommonHelpers.RequestResponse.csproj" />
+    <ProjectReference Include="..\..\CommonHelpers.HealthCheck\CommonHelpers.HealthCheck.csproj" />
+    <ProjectReference Include="..\..\CommonHelpers.RabbitMQ\CommonHelpers.RabbitMQ.csproj" />
+    <ProjectReference Include="..\..\CommonHelpers.Kafka\CommonHelpers.Kafka.csproj" />
+    <ProjectReference Include="..\..\CommonHelpers.InvokePrivate\CommonHelpers.InvokePrivate.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+</Project>
+
