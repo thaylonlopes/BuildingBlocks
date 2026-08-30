@@ -1,0 +1,43 @@
+# =============================================================================
+# 🔒 ARQUIVOS E PASTAS OCULTAS LOCAIS (ESTRATÉGIA WHITELIST / DENY-BY-DEFAULT)
+# =============================================================================
+.*
+scratchpad.md
+**/scratchpad.md
+!.gitignore
+!.gitattributes
+!.editorconfig
+!.dockerignore
+!.github/
+!.github/**
+!.template.config/
+!.template.config/**
+!.devcontainer/
+!.devcontainer/**
+
+# =============================================================================
+# 🛠️ .NET / VISUAL STUDIO BUILD ARTIFACTS
+# =============================================================================
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+nupkgs/
+packages/
+TestResults/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+*.dbmdl
+
+# =============================================================================
+# 💥 DUMPS, PROFILING & COVERAGE
+# =============================================================================
+*.stackdump
+*.dmp
+*.crash
+*.prof
+*.coverage
+*.coveragexml
