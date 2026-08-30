@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net6.0;net8.0;net9.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+
+    <!-- NuGet Package Metadata -->
+    <IsPackable>true</IsPackable>
+    <PackageId>CommonHelpers.RabbitMQ</PackageId>
+    <Version>0.0.1-beta.1</Version>
+    <Authors>Equipe de Engenharia e Arquitetura</Authors>
+    <Company>Corporativo</Company>
+    <Product>CommonHelpers Suite</Product>
+    <Description>Adaptador resiliente de RabbitMQ implementando a abstração unificada IEventProducer e IEventHandler com suporte a Publisher Confirms, Dead-Letter Queue (.dlq) automática, retentativas e DI para .NET 6, .NET 8 e .NET 9.</Description>
+    <PackageTags>rabbitmq;messaging;event-driven;dlq;publisher-confirms;polly;amqp;csharp;dotnet;net6;net8;net9</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryType>git</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CommonHelpers.RequestResponse\CommonHelpers.RequestResponse.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
+    <PackageReference Include="Polly" Version="8.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>
+
