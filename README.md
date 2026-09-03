@@ -1,6 +1,6 @@
-# 🧰 CommonHelpers
+#  CommonHelpers
 
-> Uma suíte utilitária modular em C# / .NET para acelerar a construção de microsserviços, Web APIs e Worker Services com resiliência, observabilidade, mensageria unificada e código limpo.
+> Suíte utilitária modular em .NET para acelerar a construção de microsserviços, Web APIs e Worker Services com Result Pattern, Health Checks padronizados e mensageria resiliente (RabbitMQ & Kafka).
 
 [![.NET 6.0](https://img.shields.io/badge/.NET-6.0-purple.svg)](https://dotnet.microsoft.com/)
 [![.NET 8.0](https://img.shields.io/badge/.NET-8.0%20(LTS)-blue.svg)](https://dotnet.microsoft.com/)
@@ -11,35 +11,49 @@
 
 ---
 
-## 🌟 O que é o CommonHelpers?
+##  Sumário
 
-O **CommonHelpers** é uma coleção modular de blocos fundamentais de infraestrutura, comunicação e resiliência projetada para eliminar o código boilerplate repetitivo em microsserviços .NET:
-
-1. **💎 Result Pattern, Paginação & Contratos (`CommonHelpers.RequestResponse`)**: `Result<T>` funcional com `ErrorType`, `PagedResult<T>` imutável com cálculo automático de páginas, `ValidationError` por campo e portas agnósticas de mensageria (`IEventProducer`, `IEventHandler<T>`, `EventMessage<T>`). **Zero dependências externas**.
-2. **🩺 Health Checks Padronizados (`CommonHelpers.HealthCheck`)**: Probes de *Liveness* (`/liveness`), *Readiness* (`/ready`) e dashboard com UI Client (`/health`) em uma linha, para Web APIs e Worker Services em segundo plano.
-3. **🐰 Adaptador RabbitMQ (`CommonHelpers.RabbitMQ`)**: Implementação de `IEventProducer` e `IRabbitMqProducer` com Publisher Confirms, Dead-Letter Queue (`.dlq`) automática e retentativas com Polly.
-4. **🦅 Adaptador Apache Kafka (`CommonHelpers.Kafka`)**: Implementação de `IEventProducer` e `IKafkaProducer` com Partition Keys, Dead Letter Topic (`.dlt`), idempotência e headers de telemetria.
-5. **🔍 Invocação Segura de Membros Privados (`CommonHelpers.InvokePrivate`)**: Utilitário baseado em Reflection para testes e código legado com desembrulho de `TargetInvocationException`.
+- [ O que é o CommonHelpers?](#-o-que-é-o-commonhelpers)
+- [ Pacotes NuGet](#-pacotes-nuget)
+- [ Guia de Início Rápido](#-guia-de-início-rápido)
+  - [1. Mensageria Agnóstica (Ports & Adapters)](#1-mensageria-agnóstica-ports--adapters)
+  - [2. Paginação Padronizada e Result Pattern](#2-paginação-padronizada-e-result-pattern)
+  - [3. Health Checks Padronizados em 1 Linha](#3-health-checks-padronizados-em-1-linha)
+  - [4. Showcase & API Executável](#4--showcase--api-executável)
+- [ Executando os Testes](#-executando-os-testes)
+- [ Catálogo de Decisões Arquiteturais (ADRs)](#️-catálogo-de-decisões-arquiteturais-adrs)
 
 ---
 
-## 📦 Matriz de Pacotes NuGet (`nupkgs/`)
+##  O que é o CommonHelpers?
 
-| Pacote NuGet | Versão | Runtimes Suportados | Descrição & Escopo |
+O **CommonHelpers** é uma coleção modular de blocos fundamentais de infraestrutura, comunicação e resiliência projetada para eliminar código boilerplate repetitivo em microsserviços .NET:
+
+1. ** Result Pattern, Paginação & Contratos ([`CommonHelpers.RequestResponse`](CommonHelpers.RequestResponse/README.md))**: `Result<T>` funcional com `ErrorType`, `PagedResult<T>` imutável com cálculo automático de páginas, `ValidationError` por campo e portas agnósticas de mensageria (`IEventProducer`, `IEventHandler<T>`, `EventMessage<T>`). **Zero dependências externas**.
+2. ** Health Checks Padronizados ([`CommonHelpers.HealthCheck`](CommonHelpers.HealthCheck/README.md))**: Probes de *Liveness* (`/liveness`), *Readiness* (`/ready`) e dashboard com UI Client (`/health`) em uma única linha, para Web APIs e Worker Services em segundo plano.
+3. ** Adaptador RabbitMQ ([`CommonHelpers.RabbitMQ`](CommonHelpers.RabbitMQ/README.md))**: Implementação de `IEventProducer` e `IRabbitMqProducer` com Publisher Confirms, Dead-Letter Queue (`.dlq`) automática e retentativas com Polly.
+4. ** Adaptador Apache Kafka ([`CommonHelpers.Kafka`](CommonHelpers.Kafka/README.md))**: Implementação de `IEventProducer` e `IKafkaProducer` com Partition Keys, Dead Letter Topic (`.dlt`), idempotência e headers de telemetria.
+5. ** Invocação Segura de Membros Privados ([`CommonHelpers.InvokePrivate`](CommonHelpers.InvokePrivate/README.md))**: Utilitário baseado em Reflection para testes e código legado com desembrulho de `TargetInvocationException`.
+
+---
+
+## Pacotes NuGet
+
+| Pacote NuGet | Versão | Runtimes Suportados | Descrição & Documentação |
 | :--- | :---: | :--- | :--- |
-| **`CommonHelpers.RequestResponse`** | `0.0.1-beta.1` | `net6.0; net8.0; net9.0` | Result Pattern, Paginação, ValidationError e Contratos Agnósticos de Mensageria. |
-| **`CommonHelpers.HealthCheck`** | `0.0.1-beta.1` | `net8.0; net9.0` | Probes de Liveness, Readiness, UI Client e Web Host para Workers. |
-| **`CommonHelpers.RabbitMQ`** | `0.0.1-beta.1` | `net6.0; net8.0; net9.0` | Adaptador RabbitMQ com Publisher Confirms e DLQ automática. |
-| **`CommonHelpers.Kafka`** | `0.0.1-beta.1` | `net6.0; net8.0; net9.0` | Adaptador Kafka com Partition Keys, Idempotência e DLT. |
-| **`CommonHelpers.InvokePrivate`** | `0.0.1-beta.1` | `net6.0; net8.0; net9.0` | Reflection segura com desembrulho de exceções para legados. |
+| [**`CommonHelpers.RequestResponse`**](CommonHelpers.RequestResponse/README.md) | `0.0.1-beta.1` | `net6.0; net8.0; net9.0` | Result Pattern, Paginação, ValidationError e Portas Agnósticas de Mensageria. |
+| [**`CommonHelpers.HealthCheck`**](CommonHelpers.HealthCheck/README.md) | `0.0.1-beta.1` | `net8.0; net9.0` | Probes de Liveness, Readiness, UI Client e Web Host para Workers. |
+| [**`CommonHelpers.RabbitMQ`**](CommonHelpers.RabbitMQ/README.md) | `0.0.1-beta.1` | `net6.0; net8.0; net9.0` | Adaptador RabbitMQ com Publisher Confirms e DLQ automática. |
+| [**`CommonHelpers.Kafka`**](CommonHelpers.Kafka/README.md) | `0.0.1-beta.1` | `net6.0; net8.0; net9.0` | Adaptador Kafka com Partition Keys, Idempotência e DLT. |
+| [**`CommonHelpers.InvokePrivate`**](CommonHelpers.InvokePrivate/README.md) | `0.0.1-beta.1` | `net6.0; net8.0; net9.0` | Reflection segura com desembrulho de exceções para legados. |
 
 ---
 
-## 🚀 Guia de Início Rápido (Quick Start)
+## Guia de Início Rápido
 
-### 1. Mensageria Agnóstica (Troque de Broker sem Alterar a Regra de Negócio)
+### 1. Mensageria Agnóstica (Ports & Adapters)
 
-No `Program.cs`, registre o provedor desejado:
+Troque de broker de mensageria alterando apenas a injeção de dependência no `Program.cs`, sem tocar na regra de negócio:
 
 ```csharp
 // Opção A: Usando RabbitMQ
@@ -86,7 +100,23 @@ public async Task<IActionResult> GetUsers([FromQuery] PagedRequest request)
 
 ---
 
-### 3. 🌟 Showcase & Projeto de Exemplo Executável (`examples/`)
+### 3. Health Checks Padronizados em 1 Linha
+
+```csharp
+using CommonHelpers.HealthCheck;
+
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddRequiredHealthChecks();
+
+var app = builder.Build();
+app.MapRequiredHealthCheck(); // Expõe /health, /liveness e /ready
+
+app.Run();
+```
+
+---
+
+### 4. Showcase & API Executável
 
 Criamos um projeto completo e executável em [`examples/CommonHelpers.Showcase.Api`](examples/CommonHelpers.Showcase.Api) com **Swagger UI** demonstrando na prática o uso integrado de todos os 5 pacotes.
 
@@ -99,7 +129,7 @@ Acesse o Swagger interativo em: **`http://localhost:5000`**.
 
 ---
 
-## 🧪 Executando os Testes
+##  Executando os Testes
 
 Para rodar todos os **79 testes unitários** da solução:
 
@@ -109,7 +139,8 @@ dotnet test
 
 ---
 
-## 🏛️ Catálogo de Decisões Arquiteturais (ADRs)
+##  Catálogo de Decisões Arquiteturais (ADRs)
+
 - [**`ADR-000: Arquitetura e Convenções da Suíte CommonHelpers`**](docs/adr/ADR-000-arquitetura-e-convencoes.md)
 - [**`ADR-001: Decisões Arquiteturais do Pacote CommonHelpers.RequestResponse`**](docs/adr/ADR-001-commonhelpers-requestresponse.md)
 - [**`ADR-002: Decisões Arquiteturais do Pacote CommonHelpers.HealthCheck`**](docs/adr/ADR-002-commonhelpers-healthcheck.md)

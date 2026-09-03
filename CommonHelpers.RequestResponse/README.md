@@ -10,7 +10,7 @@
 
 ---
 
-## 📦 Instalação
+##  Instalação
 
 Adicione o pacote ao seu projeto via .NET CLI:
 
@@ -20,7 +20,7 @@ dotnet add package CommonHelpers.RequestResponse --version 0.0.1-beta.1
 
 ---
 
-## 🚀 Como Usar
+##  Como Usar
 
 ### 1. Paginação Padronizada (`PagedResult<T>` e `PagedRequest`)
 
@@ -104,7 +104,49 @@ string responseText = result.Match(
 );
 ```
 
-### 5. Rastreabilidade com `IRequest`
+### 5. Contratos Agnósticos de Mensageria (`CommonHelpers.Messaging`)
+
+Publique e consuma eventos sem acoplar sua camada de domínio ou aplicação a nenhum broker concreto (RabbitMQ, Kafka, Azure Service Bus):
+
+```csharp
+using CommonHelpers.Messaging;
+
+public class OrderService
+{
+    private readonly IEventProducer _eventProducer;
+
+    public OrderService(IEventProducer eventProducer) => _eventProducer = eventProducer;
+
+    public async Task CreateOrderAsync(OrderDto order, CancellationToken ct)
+    {
+        var orderCreated = new OrderCreatedEvent(order.Id, order.Total);
+        
+        // Publicação agnóstica com metadados opcionais
+        var metadata = new EventMetadata().WithCorrelationId(Guid.NewGuid().ToString());
+        await _eventProducer.PublishAsync(orderCreated, metadata, ct);
+    }
+}
+```
+
+Implementação de Handlers desacoplados:
+
+```csharp
+using CommonHelpers.Messaging;
+using CommonHelpers.RequestResponse;
+
+public class OrderCreatedHandler : IEventHandler<OrderCreatedEvent>
+{
+    public async Task<Result> HandleAsync(EventMessage<OrderCreatedEvent> message, CancellationToken ct)
+    {
+        Console.WriteLine($"Processando pedido: {message.Payload.OrderId}, EventId: {message.EventId}");
+        return Result.Success();
+    }
+}
+```
+
+---
+
+### 6. Rastreabilidade com `IRequest`
 
 ```csharp
 public class ProcessPaymentCommand : IRequest
@@ -114,7 +156,9 @@ public class ProcessPaymentCommand : IRequest
 }
 ```
 
-### 6. Interoperabilidade com `Response<T>` (Legado)
+---
+
+### 7. Interoperabilidade com `Response<T>` (Legado)
 
 ```csharp
 // Result<T> -> Response<T>
@@ -126,8 +170,7 @@ Result<UserDto> modernResult = legacyResponse.ToResult();
 
 ---
 
-## 🏛️ Compatibilidade
-- **.NET 6.0**
-- **.NET 8.0** (LTS)
-- **.NET 9.0** (Standard)
+##  Compatibilidade & Princípios
+- **.NET 6.0**, **.NET 8.0** (LTS) e **.NET 9.0**
 - **Zero Dependências Externas** (100% BCL Pura).
+- **Invariantes Protegidas**: `IsSuccess` é estritamente falso quando existem mensagens de erro.

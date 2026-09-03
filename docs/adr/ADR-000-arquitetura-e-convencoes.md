@@ -1,7 +1,4 @@
 # ADR-000: Arquitetura e Convenções da Suíte CommonHelpers
-
-
-
 ## 📋 1. Contexto e Motivação
 
 O ecossistema `CommonHelpers` foi estruturado para resolver o problema de proliferação de código utilitário duplicado, contratos inconsistentes e configurações de infraestrutura fragmentadas entre múltiplos microsserviços corporativos em .NET.

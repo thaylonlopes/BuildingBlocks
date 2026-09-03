@@ -1,43 +1,33 @@
 # 🌟 CommonHelpers Showcase API
 
-> Projeto de exemplo executável e vitrine técnica demonstrando a utilização prática e integrada de todos os pacotes da suíte **CommonHelpers** em ASP.NET Core (.NET 8 / .NET 9).
+> Projeto executável e vitrine técnica demonstrando a utilização prática e integrada de todos os pacotes da suíte **CommonHelpers** em ASP.NET Core (.NET 8 / .NET 9).
 
 ---
 
-## 🚀 Como Executar Localmente
+##  Como Executar Localmente
 
-### 1. Pré-requisitos
-- .NET 8.0 SDK ou .NET 9.0 SDK instalado.
-
-### 2. Rodando a Aplicação
-Navegue até a pasta do projeto e execute:
+### 1. Executando a partir da raiz da solução:
 
 ```powershell
-dotnet run
+dotnet run --project examples/CommonHelpers.Showcase.Api
 ```
 
-A aplicação iniciará e o **Swagger UI** estará acessível diretamente na raiz:
-- 🌐 **Swagger UI**: [http://localhost:5000](http://localhost:5000) (ou porta configurada)
+A aplicação iniciará e o **Swagger UI** estará acessível na raiz:
+-  **Swagger UI**: [http://localhost:5000](http://localhost:5000) (ou porta configurada)
 
 ---
 
-## 🧭 O que este Showcase Demonstra?
+##  O que este Showcase Demonstra?
 
-### 1. 💎 Result Pattern & ValidationError (`CommonHelpers.RequestResponse`)
-- **`GET /api/orders/{id}`**: Utiliza `Result<OrderDto>` e pattern matching `result.Match()` para retornar `200 OK` em caso de sucesso ou `404 Not Found` caso o pedido não exista.
-- **`POST /api/orders`**: Valida múltiplos campos e retorna um `ValidationError` caso os dados estejam incorretos.
+| Módulo / Pacote | Rota Exposta | Demonstração Prática |
+| :--- | :--- | :--- |
+| **`RequestResponse`** | `GET /api/orders/{id}` | Busca de pedido por ID com `Result<OrderDto>` e pattern matching `Match()`. |
+| **`RequestResponse`** | `POST /api/orders` | Validação de múltiplos campos com `ValidationError` (RFC 7807) e disparo de evento via `IEventProducer`. |
+| **`RequestResponse`** | `GET /api/orders` | Paginação padronizada com `PagedRequest` e envelope `PagedResult<OrderDto>`. |
+| **`HealthCheck`** | `GET /health` | Diagnóstico de subsistemas (SQL, AMQP, API) formatado para UI Client. |
+| **`HealthCheck`** | `GET /liveness` | Sonda de vivacidade para orquestradores (Kubernetes / Docker). |
+| **`HealthCheck`** | `GET /ready` | Sonda de prontidão para recebimento de tráfego. |
+| **`RabbitMQ / Kafka`** | *Background Event* | Processamento desacoplado de eventos com `OrderCreatedHandler`. |
+| **`InvokePrivate`** | `GET /api/diagnostics/reflection-demo` | Invocação controlada de método privado com desembrulho de exceções. |
 
-### 2. 📄 Paginação Padronizada (`PagedResult<T>` e `PagedRequest`)
-- **`GET /api/orders?pageNumber=1&pageSize=5`**: Recebe os parâmetros de paginação e retorna o envelope imutável `PagedResult<OrderDto>` contendo contagem total, páginas totais, `hasPreviousPage` e `hasNextPage`.
-
-### 3. 🩺 Health Checks Padronizados (`CommonHelpers.HealthCheck`)
-- **`GET /health`**: Resposta formatada para o UI Client com status de cada subsistema.
-- **`GET /liveness`**: Sonda de sobrevivência para orquestradores (Kubernetes).
-- **`GET /ready`**: Sonda de prontidão para receber tráfego.
-
-### 4. 📬 Mensageria Agnóstica (Ports & Adapters)
-- A camada de serviço consome apenas a interface agnóstica `IEventProducer`, permitindo alternar entre **RabbitMQ** e **Apache Kafka** alterando apenas a injeção no `Program.cs`.
-
-### 5. 🔍 Invocação Segura de Reflection (`CommonHelpers.InvokePrivate`)
-- **`GET /api/diagnostics/reflection-demo`**: Demonstra a execução de métodos privados com desembrulho automático de exceções.
 
