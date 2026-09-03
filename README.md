@@ -86,6 +86,19 @@ public async Task<IActionResult> GetUsers([FromQuery] PagedRequest request)
 
 ---
 
+### 3. 🌟 Showcase & Projeto de Exemplo Executável (`examples/`)
+
+Criamos um projeto completo e executável em [`examples/CommonHelpers.Showcase.Api`](examples/CommonHelpers.Showcase.Api) com **Swagger UI** demonstrando na prática o uso integrado de todos os 5 pacotes.
+
+Para executar localmente:
+
+```powershell
+dotnet run --project examples/CommonHelpers.Showcase.Api
+```
+Acesse o Swagger interativo em: **`http://localhost:5000`**.
+
+---
+
 ## 🧪 Executando os Testes
 
 Para rodar todos os **79 testes unitários** da solução:

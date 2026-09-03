@@ -148,7 +148,7 @@ namespace CommonHelpers.RabbitMQ.Producer
             {
                 _logger?.LogError(ex, "Erro ao publicar mensagem no RabbitMQ (Exchange: {Exchange}, RoutingKey: {RoutingKey})",
                     exchange, routingKey);
-                return Task.FromResult(Result.Failure(Error.Failure("RabbitMq.PublishError", ex.Message)));
+                return Task.FromResult(Result.Failure(Error.Failure("RabbitMq.PublishError", "Falha ao publicar mensagem no broker RabbitMQ.")));
             }
         }
 

@@ -163,12 +163,12 @@ namespace CommonHelpers.Kafka.Producer
             catch (ProduceException<string, string> pEx)
             {
                 _logger?.LogError(pEx, "Erro de entrega Kafka no tópico {Topic}: {Reason}", topic, pEx.Error.Reason);
-                return Result.Failure(CommonHelpers.RequestResponse.Error.Failure("Kafka.DeliveryError", pEx.Error.Reason));
+                return Result.Failure(CommonHelpers.RequestResponse.Error.Failure("Kafka.DeliveryError", "Falha na entrega da mensagem ao tópico Kafka."));
             }
             catch (Exception ex)
             {
                 _logger?.LogError(ex, "Erro inesperado ao produzir para o tópico Kafka {Topic}", topic);
-                return Result.Failure(CommonHelpers.RequestResponse.Error.Failure("Kafka.PublishError", ex.Message));
+                return Result.Failure(CommonHelpers.RequestResponse.Error.Failure("Kafka.PublishError", "Erro inesperado na comunicação com o Apache Kafka."));
             }
         }
 
