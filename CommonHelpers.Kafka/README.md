@@ -1,11 +1,10 @@
-# 🦅 CommonHelpers.Kafka
+# 🦅 TL.Kafka
 
 > Adaptador resiliente de mensageria para **Apache Kafka** implementando a abstração unificada **`IEventProducer`** e **`IEventHandler<T>`**, com suporte nativo a **Partition Keys**, **Dead Letter Topic (`.dlt`)**, **Idempotência**, injeção de headers de telemetria e injeção de dependência simplificada para .NET 6, .NET 8 e .NET 9.
 
 [![.NET 6.0](https://img.shields.io/badge/.NET-6.0-purple.svg)](https://dotnet.microsoft.com/)
 [![.NET 8.0](https://img.shields.io/badge/.NET-8.0%20(LTS)-blue.svg)](https://dotnet.microsoft.com/)
 [![.NET 9.0](https://img.shields.io/badge/.NET-9.0-blue.svg)](https://dotnet.microsoft.com/)
-[![Version](https://img.shields.io/badge/version-0.0.1--beta.1-orange.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ---
@@ -15,7 +14,7 @@
 Adicione o pacote ao seu projeto via .NET CLI:
 
 ```bash
-dotnet add package CommonHelpers.Kafka --version 0.0.1-beta.1
+dotnet add package TL.Kafka --version 0.1.0
 ```
 
 ---

@@ -1,11 +1,10 @@
-# 🔍 CommonHelpers.InvokePrivate
+# 🔍 TL.InvokePrivate
 
 > Utilitário para **invocação dinâmica de membros privados** via Reflection com desembrulho automático de exceções de negócio (`ExceptionDispatchInfo`), suporte síncrono e assíncrono para .NET 6, .NET 8 e .NET 9.
 
 [![.NET 6.0](https://img.shields.io/badge/.NET-6.0-purple.svg)](https://dotnet.microsoft.com/)
 [![.NET 8.0](https://img.shields.io/badge/.NET-8.0%20(LTS)-blue.svg)](https://dotnet.microsoft.com/)
 [![.NET 9.0](https://img.shields.io/badge/.NET-9.0-blue.svg)](https://dotnet.microsoft.com/)
-[![Version](https://img.shields.io/badge/version-0.0.1--beta.1-orange.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ---
@@ -23,13 +22,13 @@
 Adicione o pacote ao seu projeto via .NET CLI:
 
 ```bash
-dotnet add package CommonHelpers.InvokePrivate --version 0.0.1-beta.1
+dotnet add package TL.InvokePrivate --version 0.1.0
 ```
 
 Ou através do Gerenciador de Pacotes do Visual Studio:
 
 ```powershell
-Install-Package CommonHelpers.InvokePrivate -Version 0.0.1-beta.1
+Install-Package TL.InvokePrivate -Version 0.1.0
 ```
 
 ---

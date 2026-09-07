@@ -2,31 +2,9 @@
 
   <PropertyGroup>
     <TargetFrameworks>net6.0;net8.0;net9.0</TargetFrameworks>
-    <LangVersion>latest</LangVersion>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);1591</NoWarn>
-
-    <!-- NuGet Package Metadata -->
-    <IsPackable>true</IsPackable>
-    <PackageId>CommonHelpers.RequestResponse</PackageId>
-    <Version>0.0.1-beta.1</Version>
-    <Authors>Equipe de Engenharia e Arquitetura</Authors>
-    <Company>Corporativo</Company>
-    <Product>CommonHelpers Suite</Product>
+    <PackageId>TL.RequestResponse</PackageId>
     <Description>Modelagem moderna de resultados com Result Pattern, PagedResult&lt;T&gt;, ValidationError por campo, IRequest e envelope Response&lt;T&gt; com zero dependências externas para .NET 6, .NET 8 e .NET 9.</Description>
-    <PackageTags>result-pattern;paged-result;pagination;validation-error;response;request;csharp;dotnet;net6;net8;net9</PackageTags>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryType>git</RepositoryType>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageTags>result-pattern;paged-result;pagination;validation-error;response;request;csharp;dotnet;net6;net8;net9;tl</PackageTags>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="README.md" Pack="true" PackagePath="\" />
-  </ItemGroup>
 
 </Project>

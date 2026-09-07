@@ -1,6 +1,6 @@
-# 🌟 CommonHelpers Showcase API
+# 🌟 TL.CommonHelpers Showcase API
 
-> Projeto executável e vitrine técnica demonstrando a utilização prática e integrada de todos os pacotes da suíte **CommonHelpers** em ASP.NET Core (.NET 8 / .NET 9).
+> Projeto executável e vitrine técnica demonstrando a utilização prática e integrada de todos os pacotes da suíte **TL.CommonHelpers** (`TL.RequestResponse`, `TL.HealthCheck`, `TL.RabbitMQ`, `TL.Kafka`, `TL.InvokePrivate`) em ASP.NET Core (.NET 8 / .NET 9).
 
 ---
 

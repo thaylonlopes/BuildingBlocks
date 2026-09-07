@@ -1,21 +1,20 @@
-# 💎 CommonHelpers.RequestResponse
+# 💎 TL.RequestResponse
 
 > Modelagem moderna de resultados com **Result Pattern**, tipagem semântica de erros com **ErrorType**, erros de validação por campo (**ValidationError**), paginação padronizada (**PagedResult&lt;T&gt;** / **PagedRequest**), rastreabilidade de requisições com **IRequest** e envelope tradicional **Response&lt;T&gt;** com zero dependências externas para .NET 6, .NET 8 e .NET 9.
 
 [![.NET 6.0](https://img.shields.io/badge/.NET-6.0-purple.svg)](https://dotnet.microsoft.com/)
 [![.NET 8.0](https://img.shields.io/badge/.NET-8.0%20(LTS)-blue.svg)](https://dotnet.microsoft.com/)
 [![.NET 9.0](https://img.shields.io/badge/.NET-9.0-blue.svg)](https://dotnet.microsoft.com/)
-[![Version](https://img.shields.io/badge/version-0.0.1--beta.1-orange.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ---
 
-##  Instalação
+## 📦 Instalação
 
 Adicione o pacote ao seu projeto via .NET CLI:
 
 ```bash
-dotnet add package CommonHelpers.RequestResponse --version 0.0.1-beta.1
+dotnet add package TL.RequestResponse --version 0.1.0
 ```
 
 ---
