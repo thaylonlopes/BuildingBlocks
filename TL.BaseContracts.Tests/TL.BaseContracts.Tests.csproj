@@ -5,6 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
+    <AssemblyName>TL.BaseContracts.Tests</AssemblyName>
+    <RootNamespace>TL.BaseContracts.Tests</RootNamespace>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
@@ -20,11 +22,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CommonHelpers.RequestResponse\CommonHelpers.RequestResponse.csproj" />
+    <ProjectReference Include="..\TL.BaseContracts\TL.BaseContracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="Xunit" />
+    <Using Include="TL.BaseContracts" />
+    <Using Include="TL.BaseContracts.Messaging" />
   </ItemGroup>
 
 </Project>

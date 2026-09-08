@@ -1,8 +1,8 @@
-# 💎 TL.RequestResponse
+# 💎 TL.BaseContracts
 
-> Modelagem moderna de resultados com **Result Pattern**, tipagem semântica de erros com **ErrorType**, erros de validação por campo (**ValidationError**), paginação padronizada (**PagedResult&lt;T&gt;** / **PagedRequest**), rastreabilidade de requisições com **IRequest** e envelope tradicional **Response&lt;T&gt;** com zero dependências externas para .NET 6, .NET 8 e .NET 9.
+> Fundação canônica e unificada de contratos em BCL pura (Commands, Queries, Events, Results, Errors e Paginações) para aplicações .NET modernas e legadas (.NET Standard 2.0, .NET 8 e .NET 9).
 
-[![.NET 6.0](https://img.shields.io/badge/.NET-6.0-purple.svg)](https://dotnet.microsoft.com/)
+[![.NET Standard 2.0](https://img.shields.io/badge/.NET%20Standard-2.0-purple.svg)](https://dotnet.microsoft.com/)
 [![.NET 8.0](https://img.shields.io/badge/.NET-8.0%20(LTS)-blue.svg)](https://dotnet.microsoft.com/)
 [![.NET 9.0](https://img.shields.io/badge/.NET-9.0-blue.svg)](https://dotnet.microsoft.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
@@ -14,19 +14,19 @@
 Adicione o pacote ao seu projeto via .NET CLI:
 
 ```bash
-dotnet add package TL.RequestResponse --version 0.1.0
+dotnet add package TL.BaseContracts --version 0.2.0
 ```
 
 ---
 
-##  Como Usar
+## 🚀 Como Usar
 
 ### 1. Paginação Padronizada (`PagedResult<T>` e `PagedRequest`)
 
 Padronize as respostas de listagens e relatórios com cálculo automático de páginas e navegação:
 
 ```csharp
-using CommonHelpers.RequestResponse;
+using TL.BaseContracts;
 
 [HttpGet("users")]
 public async Task<IActionResult> GetUsers([FromQuery] PagedRequest request)
@@ -49,7 +49,7 @@ public async Task<IActionResult> GetUsers([FromQuery] PagedRequest request)
 Integração limpa com FluentValidation, DataAnnotations e formato RFC 7807 (`ProblemDetails`):
 
 ```csharp
-using CommonHelpers.RequestResponse;
+using TL.BaseContracts;
 
 public Result<UserDto> CreateUser(CreateUserCommand command)
 {
@@ -75,7 +75,7 @@ public Result<UserDto> CreateUser(CreateUserCommand command)
 Substitua exceções de fluxo por código funcional limpo, expressivo e seguro:
 
 ```csharp
-using CommonHelpers.RequestResponse;
+using TL.BaseContracts;
 
 public class UserService
 {
@@ -103,12 +103,12 @@ string responseText = result.Match(
 );
 ```
 
-### 5. Contratos Agnósticos de Mensageria (`CommonHelpers.Messaging`)
+### 5. Contratos Agnósticos de Mensageria (`TL.BaseContracts.Messaging`)
 
 Publique e consuma eventos sem acoplar sua camada de domínio ou aplicação a nenhum broker concreto (RabbitMQ, Kafka, Azure Service Bus):
 
 ```csharp
-using CommonHelpers.Messaging;
+using TL.BaseContracts.Messaging;
 
 public class OrderService
 {
@@ -130,8 +130,8 @@ public class OrderService
 Implementação de Handlers desacoplados:
 
 ```csharp
-using CommonHelpers.Messaging;
-using CommonHelpers.RequestResponse;
+using TL.BaseContracts;
+using TL.BaseContracts.Messaging;
 
 public class OrderCreatedHandler : IEventHandler<OrderCreatedEvent>
 {

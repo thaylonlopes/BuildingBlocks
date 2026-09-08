@@ -11,19 +11,20 @@ A biblioteca tem como missão fornecer **blocos fundamentais de alta coesão e b
 
 ### 2.1. Empacotamento Granular e Modularidade (1 Pacote = 1 Responsabilidade)
 A solução é dividida em pacotes NuGet independentes, evitando dependências transitivas indesejadas em microsserviços consumidores:
-- `CommonHelpers.RequestResponse`: Modelos de resultado, erros tipados, paginação e contratos agnósticos de mensageria (**Zero dependências externas**).
-- `CommonHelpers.HealthCheck`: Diagnósticos e sondas para ASP.NET Core e Worker Services.
-- `CommonHelpers.RabbitMQ`: Adaptador resiliente AMQP com Dead-Letter Queue automática.
-- `CommonHelpers.Kafka`: Adaptador resiliente Apache Kafka com Partition Keys e DLT.
-- `CommonHelpers.InvokePrivate`: Reflection controlada com desembrulho de exceções para legados.
+- `TL.BaseContracts`: Modelos de resultado, erros tipados, paginação e contratos agnósticos de mensageria (**Zero dependências externas**).
+- `TL.HealthCheck`: Diagnósticos e sondas para ASP.NET Core e Worker Services.
+- `TL.RabbitMQ`: Adaptador resiliente AMQP com Dead-Letter Queue automática (migrado para `TL.Messaging`).
+- `TL.Kafka`: Adaptador resiliente Apache Kafka com Partition Keys e DLT (migrado para `TL.Messaging`).
+- `TL.InvokePrivate`: Reflection controlada com desembrulho de exceções para legados (descontinuado).
 
-### 2.2. Multi-Targeting Moderno (.NET 6, .NET 8 e .NET 9)
+### 2.2. Multi-Targeting Moderno (.NET Standard 2.0, .NET 8 e .NET 9)
 Todos os pacotes suportam compilação multi-target para as versões modernas e suportadas do ecossistema .NET:
-- `<TargetFrameworks>net6.0;net8.0;net9.0</TargetFrameworks>` (RequestResponse, RabbitMQ, Kafka, InvokePrivate).
-- `<TargetFrameworks>net8.0;net9.0</TargetFrameworks>` (HealthCheck, devido às dependências do ASP.NET Core 8/9).
+- `<TargetFrameworks>netstandard2.0;net8.0;net9.0</TargetFrameworks>` (`TL.BaseContracts`).
+- `<TargetFrameworks>net8.0;net9.0</TargetFrameworks>` (`HealthCheck`).
+- `<TargetFrameworks>net6.0;net8.0;net9.0</TargetFrameworks>` (`InvokePrivate` legado).
 
 ### 2.3. Versionamento Semântico e Pré-Lançamento Padronizado
-- Versão inicial alinhada em `<Version>0.0.1-beta.1</Version>` para todos os pacotes.
+- Versão inicial alinhada em `<Version>0.0.1-beta.1</Version>` para todos os pacotes (evoluindo para `0.2.0`).
 - Inclusão de símbolos de depuração `<SymbolPackageFormat>snupkg</SymbolPackageFormat>` e `<PackageReadmeFile>README.md</PackageReadmeFile>` embarcado em cada `.nupkg`.
 
 ### 2.4. Convenções de Código e Engenharia de Qualidade
@@ -46,9 +47,9 @@ Todos os pacotes suportam compilação multi-target para as versões modernas e 
 
 | ADR | Projeto | Foco Arquitetural |
 | :--- | :--- | :--- |
-| **`ADR-001`** | `CommonHelpers.RequestResponse` | Result Pattern, Paginação, ValidationError e Portas Agnósticas. |
-| **`ADR-002`** | `CommonHelpers.HealthCheck` | Sondas de Liveness/Readiness, UI Client e Web Host para Workers. |
-| **`ADR-003`** | `CommonHelpers.RabbitMQ` | Adaptador RabbitMQ com Publisher Confirms e DLQ automática. |
-| **`ADR-004`** | `CommonHelpers.Kafka` | Adaptador Kafka com Partition Keys, Idempotência e DLT. |
-| **`ADR-005`** | `CommonHelpers.InvokePrivate` | Reflection controlada com desembrulho de `TargetInvocationException`. |
+| **`ADR-001`** | `TL.BaseContracts` | Result Pattern, Paginação, ValidationError e Portas Agnósticas. |
+| **`ADR-002`** | `TL.HealthCheck` | Sondas de Liveness/Readiness, UI Client e Web Host para Workers. |
+| **`ADR-003`** | `TL.RabbitMQ` | Adaptador RabbitMQ com Publisher Confirms e DLQ automática. |
+| **`ADR-004`** | `TL.Kafka` | Adaptador Kafka com Partition Keys, Idempotência e DLT. |
+| **`ADR-005`** | `TL.InvokePrivate` | Reflection controlada com desembrulho de `TargetInvocationException`. |
 

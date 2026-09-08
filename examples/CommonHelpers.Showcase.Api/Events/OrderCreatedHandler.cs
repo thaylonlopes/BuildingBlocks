@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
-using CommonHelpers.Messaging;
-using CommonHelpers.RequestResponse;
+using TL.BaseContracts;
+using TL.BaseContracts.Messaging;
 using Microsoft.Extensions.Logging;
 
 namespace CommonHelpers.Showcase.Api.Events

@@ -8,10 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\CommonHelpers.RequestResponse\CommonHelpers.RequestResponse.csproj" />
+    <ProjectReference Include="..\..\TL.BaseContracts\TL.BaseContracts.csproj" />
     <ProjectReference Include="..\..\CommonHelpers.HealthCheck\CommonHelpers.HealthCheck.csproj" />
-    <ProjectReference Include="..\..\CommonHelpers.RabbitMQ\CommonHelpers.RabbitMQ.csproj" />
-    <ProjectReference Include="..\..\CommonHelpers.Kafka\CommonHelpers.Kafka.csproj" />
     <ProjectReference Include="..\..\CommonHelpers.InvokePrivate\CommonHelpers.InvokePrivate.csproj" />
   </ItemGroup>
 
@@ -20,4 +18,3 @@
   </ItemGroup>
 
 </Project>
-

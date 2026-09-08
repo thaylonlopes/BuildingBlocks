@@ -1,6 +1,6 @@
 using System;
 
-namespace CommonHelpers.RequestResponse
+namespace TL.BaseContracts
 {
     /// <summary>
     /// Categorização semântica de erros para simplificar o mapeamento em status codes HTTP e logs.

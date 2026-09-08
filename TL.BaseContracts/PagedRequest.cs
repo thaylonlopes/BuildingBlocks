@@ -1,6 +1,6 @@
 using System;
 
-namespace CommonHelpers.RequestResponse
+namespace TL.BaseContracts
 {
     /// <summary>
     /// Contrato padronizado para requisições de paginação em consultas de listagem e relatórios.

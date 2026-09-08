@@ -1,13 +1,14 @@
-# ADR-001: Decisões Arquiteturais do Pacote CommonHelpers.RequestResponse
+# ADR-001: Decisões Arquiteturais do Pacote TL.BaseContracts
 
-
-##  1. Contexto e Motivação
+## 📋 1. Contexto e Motivação
 
 Em arquiteturas de microsserviços e Web APIs, o tratamento de fluxos de sucesso e falha através de exceções (`throw new Exception(...)`) causa severa degradação de performance por alocações massivas no heap e captura de stack traces custosos, além de obscurecer os fluxos de negócio.
 
 Adicionalmente, problemas comuns como **paginação** de listagens e **agrupamento de múltiplos erros de validação por campo** (FluentValidation / RFC 7807 ProblemDetails) eram reimplementados de forma dispersa e inconsistente em cada projeto.
 
-##  2. Decisões Arquiteturais
+Na versão `0.2.0`, o pacote passou por um rebranding oficial de `TL.RequestResponse` para **`TL.BaseContracts`**, unificando contratos canônicos de entrada, saída e domínio em BCL pura com multi-targeting (`netstandard2.0;net8.0;net9.0`).
+
+## 🎯 2. Decisões Arquiteturais
 
 ### 2.1. Adoção Canônica do Result Pattern
 - Implementação das classes imutáveis `Result<T>` e `Result` (não-genérico).
@@ -26,7 +27,7 @@ Adicionalmente, problemas comuns como **paginação** de listagens e **agrupamen
 - Permite mapear perfeitamente os erros de validação de formulários e DTOs, serializando de forma transparente para o formato RFC 7807 (`ValidationProblemDetails`).
 
 ### 2.4. Contratos Agnósticos de Mensageria (Ports & Adapters)
-- Fornece no namespace `CommonHelpers.Messaging` os contratos base:
+- Fornece no namespace `TL.BaseContracts.Messaging` os contratos base:
   - `IEventProducer`: Porta agnóstica para publicação de eventos.
   - `IEventHandler<T>`: Porta agnóstica para consumo de eventos.
   - `EventMessage<T>`: Envelope padronizado imutável (EventId, CorrelationId, Timestamp, EventType, Payload, Headers).
@@ -36,14 +37,13 @@ Adicionalmente, problemas comuns como **paginação** de listagens e **agrupamen
 - `IRequest`: Interface com `Guid IdRequest` para rastreamento de ponta a ponta.
 - `Response<T>`: Envelope tradicional mantido com métodos de ponte `ToResult()` e `ToResponse()`.
 
-##  3. Consequências e Trade-offs
+## ⚖️ 3. Consequências e Trade-offs
 
-###  Vantagens:
-- **Zero Dependências**: Pode ser instalado em qualquer biblioteca de domínio ou aplicação sem poluir dependências.
+### ✅ Vantagens:
+- **Zero Dependências**: Pode ser instalado em qualquer biblioteca de domínio ou aplicação sem poluir dependências (100% BCL pura).
 - **Previsibilidade**: Elimina bugs de "falha silenciosa" e engolimento de exceções.
 - **Produtividade**: Paginação e validação resolvidas em uma linha de código em todas as APIs.
 
-
-##  4. Status de Verificação
-- Coberto por **40 testes unitários** no `CommonHelpers.RequestResponse.Tests` (100% passing).
+## 🧪 4. Status de Verificação
+- Coberto por **40 testes unitários** no `TL.BaseContracts.Tests` (100% passing).
 

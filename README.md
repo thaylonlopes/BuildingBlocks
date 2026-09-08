@@ -2,11 +2,11 @@
 
 > Suíte utilitária modular em .NET para acelerar a construção de microsserviços, Web APIs e Worker Services com Result Pattern, Health Checks padronizados e mensageria resiliente (RabbitMQ & Kafka).
 
-[![.NET 6.0](https://img.shields.io/badge/.NET-6.0-purple.svg)](https://dotnet.microsoft.com/)
+[![.NET Standard 2.0](https://img.shields.io/badge/.NET%20Standard-2.0-purple.svg)](https://dotnet.microsoft.com/)
 [![.NET 8.0](https://img.shields.io/badge/.NET-8.0%20(LTS)-blue.svg)](https://dotnet.microsoft.com/)
 [![.NET 9.0](https://img.shields.io/badge/.NET-9.0-blue.svg)](https://dotnet.microsoft.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/Tests-79%2F79%20Passing-brightgreen.svg)]()
+[![Tests](https://img.shields.io/badge/Tests-69%2F69%20Passing-brightgreen.svg)]()
 
 ---
 
@@ -28,11 +28,11 @@
 
 O **TL.CommonHelpers** é uma coleção modular de blocos fundamentais de infraestrutura, comunicação e resiliência projetada para eliminar código boilerplate repetitivo em microsserviços .NET:
 
-1. **💎 Result Pattern, Paginação & Contratos ([`TL.RequestResponse`](CommonHelpers.RequestResponse/README.md))**: `Result<T>` funcional com `ErrorType`, `PagedResult<T>` imutável com cálculo automático de páginas, `ValidationError` por campo e portas agnósticas de mensageria (`IEventProducer`, `IEventHandler<T>`, `EventMessage<T>`). **Zero dependências externas**.
-2. **🩺 Health Checks Padronizados ([`TL.HealthCheck`](CommonHelpers.HealthCheck/README.md))**: Probes de *Liveness* (`/liveness`), *Readiness* (`/ready`) e dashboard com UI Client (`/health`) em uma única linha, para Web APIs e Worker Services em segundo plano.
-3. **🐰 Adaptador RabbitMQ ([`TL.RabbitMQ`](CommonHelpers.RabbitMQ/README.md))**: Implementação de `IEventProducer` e `IRabbitMqProducer` com Publisher Confirms, Dead-Letter Queue (`.dlq`) automática e retentativas com Polly.
-4. **🦅 Adaptador Apache Kafka ([`TL.Kafka`](CommonHelpers.Kafka/README.md))**: Implementação de `IEventProducer` e `IKafkaProducer` com Partition Keys, Dead Letter Topic (`.dlt`), idempotência e headers de telemetria.
-5. **🔍 Invocação Segura de Membros Privados ([`TL.InvokePrivate`](CommonHelpers.InvokePrivate/README.md))**: Utilitário baseado em Reflection para testes e código legado com desembrulho de `TargetInvocationException`.
+1. **💎 Result Pattern, Paginação & Contratos ([`TL.BaseContracts`](TL.BaseContracts/README.md))**: `Result<T>` funcional com `ErrorType`, `PagedResult<T>` imutável com cálculo automático de páginas, `ValidationError` por campo e portas agnósticas de mensageria (`IEventProducer`, `IEventHandler<T>`, `EventMessage<T>`). **Zero dependências externas**.
+2. **🩺 Health Checks Padronizados ([`TL.HealthCheck`](TL.HealthCheck/README.md))**: Probes de *Liveness* (`/liveness`), *Readiness* (`/ready`) e dashboard com UI Client (`/health`) em uma única linha, para Web APIs e Worker Services em segundo plano.
+3. **🐰 Adaptador RabbitMQ ([`TL.RabbitMQ`](TL.RabbitMQ/README.md))**: Implementação de `IEventProducer` e `IRabbitMqProducer` com Publisher Confirms, Dead-Letter Queue (`.dlq`) automática e retentativas com Polly (migrado para repositório `Messaging`).
+4. **🦅 Adaptador Apache Kafka ([`TL.Kafka`](TL.Kafka/README.md))**: Implementação de `IEventProducer` e `IKafkaProducer` com Partition Keys, Dead Letter Topic (`.dlt`), idempotência e headers de telemetria (migrado para repositório `Messaging`).
+5. **🔍 Invocação Segura de Membros Privados ([`TL.InvokePrivate`](TL.InvokePrivate/README.md))**: Utilitário baseado em Reflection para testes e código legado com desembrulho de `TargetInvocationException` (descontinuado).
 
 ---
 
@@ -40,11 +40,11 @@ O **TL.CommonHelpers** é uma coleção modular de blocos fundamentais de infrae
 
 | Pacote NuGet | Versão | Runtimes Suportados | Descrição & Documentação |
 | :--- | :---: | :--- | :--- |
-| [**`TL.RequestResponse`**](CommonHelpers.RequestResponse/README.md) | `0.1.0` | `net6.0; net8.0; net9.0` | Result Pattern, Paginação, ValidationError e Portas Agnósticas de Mensageria. |
-| [**`TL.HealthCheck`**](CommonHelpers.HealthCheck/README.md) | `0.1.0` | `net8.0; net9.0` | Probes de Liveness, Readiness, UI Client e Web Host para Workers. |
-| [**`TL.RabbitMQ`**](CommonHelpers.RabbitMQ/README.md) | `0.1.0` | `net6.0; net8.0; net9.0` | Adaptador RabbitMQ com Publisher Confirms e DLQ automática. |
-| [**`TL.Kafka`**](CommonHelpers.Kafka/README.md) | `0.1.0` | `net6.0; net8.0; net9.0` | Adaptador Kafka com Partition Keys, Idempotência e DLT. |
-| [**`TL.InvokePrivate`**](CommonHelpers.InvokePrivate/README.md) | `0.1.0` | `net6.0; net8.0; net9.0` | Reflection segura com desembrulho de exceções para legados. |
+| [**`TL.BaseContracts`**](TL.BaseContracts/README.md) | `0.2.0` | `netstandard2.0; net8.0; net9.0` | Fundação canônica de contratos em BCL pura (Commands, Queries, Events, Results, Errors e Paginações). |
+| [**`TL.HealthCheck`**](TL.HealthCheck/README.md) | `0.1.0` | `net8.0; net9.0` | Probes de Liveness, Readiness, UI Client e Web Host para Workers. |
+| [**`TL.RabbitMQ`**](TL.RabbitMQ/README.md) | `0.1.0` | `net6.0; net8.0; net9.0` | Adaptador RabbitMQ com Publisher Confirms e DLQ automática. |
+| [**`TL.Kafka`**](TL.Kafka/README.md) | `0.1.0` | `net6.0; net8.0; net9.0` | Adaptador Kafka com Partition Keys, Idempotência e DLT. |
+| [**`TL.InvokePrivate`**](TL.InvokePrivate/README.md) | `0.1.0` | `net6.0; net8.0; net9.0` | Reflection segura com desembrulho de exceções para legados. |
 
 ---
 
@@ -65,7 +65,7 @@ builder.Services.AddRabbitMqMessaging(builder.Configuration);
 Na regra de negócio, injete apenas a interface agnóstica `IEventProducer`:
 
 ```csharp
-using CommonHelpers.Messaging;
+using TL.BaseContracts.Messaging;
 
 public class OrderService
 {
@@ -86,7 +86,7 @@ public class OrderService
 ### 2. Paginação Padronizada e Result Pattern
 
 ```csharp
-using CommonHelpers.RequestResponse;
+using TL.BaseContracts;
 
 [HttpGet("users")]
 public async Task<IActionResult> GetUsers([FromQuery] PagedRequest request)
@@ -117,7 +117,7 @@ app.Run();
 
 ### 4. Showcase & API Executável
 
-Criamos um projeto completo e executável em [`examples/CommonHelpers.Showcase.Api`](examples/CommonHelpers.Showcase.Api) com **Swagger UI** demonstrando na prática o uso integrado de todos os 5 pacotes.
+Criamos um projeto completo e executável em [`examples/CommonHelpers.Showcase.Api`](examples/CommonHelpers.Showcase.Api) com **Swagger UI** demonstrando na prática o uso integrado dos pacotes.
 
 Para executar localmente:
 
@@ -128,9 +128,9 @@ Acesse o Swagger interativo em: **`http://localhost:5000`**.
 
 ---
 
-##  Executando os Testes
+## 🧪 Executando os Testes
 
-Para rodar todos os **79 testes unitários** da solução:
+Para rodar todos os **69 testes unitários** da solução:
 
 ```powershell
 dotnet test
@@ -138,11 +138,11 @@ dotnet test
 
 ---
 
-##  Catálogo de Decisões Arquiteturais (ADRs)
+## 🏛️ Catálogo de Decisões Arquiteturais (ADRs)
 
 - [**`ADR-000: Arquitetura e Convenções da Suíte CommonHelpers`**](docs/adr/ADR-000-arquitetura-e-convencoes.md)
-- [**`ADR-001: Decisões Arquiteturais do Pacote CommonHelpers.RequestResponse`**](docs/adr/ADR-001-commonhelpers-requestresponse.md)
-- [**`ADR-002: Decisões Arquiteturais do Pacote CommonHelpers.HealthCheck`**](docs/adr/ADR-002-commonhelpers-healthcheck.md)
-- [**`ADR-003: Decisões Arquiteturais do Pacote CommonHelpers.RabbitMQ`**](docs/adr/ADR-003-commonhelpers-rabbitmq.md)
-- [**`ADR-004: Decisões Arquiteturais do Pacote CommonHelpers.Kafka`**](docs/adr/ADR-004-commonhelpers-kafka.md)
-- [**`ADR-005: Decisões Arquiteturais do Pacote CommonHelpers.InvokePrivate`**](docs/adr/ADR-005-commonhelpers-invokeprivate.md)
+- [**`ADR-001: Decisões Arquiteturais do Pacote TL.BaseContracts`**](docs/adr/ADR-001-tl-basecontracts.md)
+- [**`ADR-002: Decisões Arquiteturais do Pacote TL.HealthCheck`**](docs/adr/ADR-002-tl-healthcheck.md)
+- [**`ADR-003: Decisões Arquiteturais do Pacote TL.RabbitMQ`**](docs/adr/ADR-003-tl-rabbitmq.md)
+- [**`ADR-004: Decisões Arquiteturais do Pacote TL.Kafka`**](docs/adr/ADR-004-tl-kafka.md)
+- [**`ADR-005: Decisões Arquiteturais do Pacote TL.InvokePrivate`**](docs/adr/ADR-005-tl-invokeprivate.md)

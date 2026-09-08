@@ -1,4 +1,4 @@
-# ADR-002: Decisões Arquiteturais do Pacote CommonHelpers.HealthCheck
+# ADR-002: Decisões Arquiteturais do Pacote TL.HealthCheck
 
 
 ##  1. Contexto e Motivação

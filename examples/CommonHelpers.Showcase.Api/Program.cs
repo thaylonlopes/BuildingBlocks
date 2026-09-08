@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using CommonHelpers.HealthCheck;
 using CommonHelpers.HealthCheck.Config;
-using CommonHelpers.Messaging;
-using CommonHelpers.RabbitMQ.Extensions;
-using CommonHelpers.RequestResponse;
+using TL.BaseContracts;
+using TL.BaseContracts.Messaging;
 using CommonHelpers.Showcase.Api.Events;
 using CommonHelpers.Showcase.Api.Models;
 using CommonHelpers.Showcase.Api.Services;
@@ -31,13 +32,12 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddRequiredHealthChecks(() => new[]
 {
-    new CheckConfig("database_sql", new[] { "ready" }, () => HealthCheckResult.Healthy("Conexão SQL saudável."), TimeSpan.FromSeconds(2)),
-    new CheckConfig("broker_amqp", new[] { "ready" }, () => HealthCheckResult.Healthy("Broker AMQP conectado."), TimeSpan.FromSeconds(3)),
-    new CheckConfig("api_liveness", new[] { "live" }, () => HealthCheckResult.Healthy("Processo em execução saudável."), TimeSpan.FromSeconds(1))
+    new CheckConfig("database_sql", new[] { "ready" }, () => HealthCheckResult.Healthy("ConexÃ£o SQL saudÃ¡vel."), TimeSpan.FromSeconds(2)),
+    new CheckConfig("event_bus", new[] { "ready" }, () => HealthCheckResult.Healthy("Event Bus in-memory ativo."), TimeSpan.FromSeconds(1)),
+    new CheckConfig("api_liveness", new[] { "live" }, () => HealthCheckResult.Healthy("Processo em execuÃ§Ã£o saudÃ¡vel."), TimeSpan.FromSeconds(1))
 });
 
-builder.Services.AddRabbitMqMessaging(builder.Configuration);
-
+builder.Services.AddSingleton<IEventProducer, InMemoryEventProducer>();
 builder.Services.AddSingleton<OrderService>();
 builder.Services.AddTransient<OrderCreatedHandler>();
 
@@ -57,7 +57,6 @@ app.MapRequiredHealthCheck();
 
 var ordersGroup = app.MapGroup("/api/orders").WithTags("Pedidos (Orders)");
 
-
 ordersGroup.MapGet("/", (
     [FromQuery] int pageNumber = 1,
     [FromQuery] int pageSize = 5,
@@ -68,8 +67,7 @@ ordersGroup.MapGet("/", (
     return Results.Ok(pagedResult);
 })
 .WithName("GetOrdersPaged")
-.WithSummary("Lista pedidos com paginação automática usando PagedRequest e PagedResult<T>.");
-
+.WithSummary("Lista pedidos com paginaÃ§Ã£o automÃ¡tica usando PagedRequest e PagedResult<T>.");
 
 ordersGroup.MapGet("/{id:guid}", (
     [FromRoute] Guid id,
@@ -88,7 +86,6 @@ ordersGroup.MapGet("/{id:guid}", (
 .WithName("GetOrderById")
 .WithSummary("Busca um pedido por ID utilizando Result<OrderDto> e Pattern Matching Match().");
 
-
 ordersGroup.MapPost("/", async (
     [FromBody] CreateOrderRequest request,
     [FromServices] OrderService orderService = null!) =>
@@ -101,7 +98,6 @@ ordersGroup.MapPost("/", async (
         {
             if (error is ValidationError validationError)
             {
-                
                 var errorsDict = validationError.Errors.ToDictionary(k => k.Key, v => v.Value);
                 return Results.ValidationProblem(
                     errors: errorsDict,
@@ -113,7 +109,7 @@ ordersGroup.MapPost("/", async (
         });
 })
 .WithName("CreateOrder")
-.WithSummary("Cria um novo pedido com validação rica por campo (ValidationError) e disparo assíncrono via IEventProducer.");
+.WithSummary("Cria um novo pedido com validaÃ§Ã£o rica por campo (ValidationError) e disparo assÃ­ncrono via IEventProducer.");
 
 app.MapGet("/api/diagnostics/reflection-demo", () =>
 {
@@ -126,15 +122,37 @@ app.MapGet("/api/diagnostics/reflection-demo", () =>
 
     return Results.Ok(new
     {
-        Message = "Demonstração de invocação de método privado via MethodInvoker com desembrulho de exceções.",
+        Message = "DemonstraÃ§Ã£o de invocaÃ§Ã£o de mÃ©todo privado via MethodInvoker com desembrulho de exceÃ§Ãµes.",
         Input = 7,
         Result = calculated
     });
 })
-.WithTags("Diagnósticos")
+.WithTags("DiagnÃ³sticos")
 .WithSummary("Demonstra o uso controlado de Reflection do pacote CommonHelpers.InvokePrivate.");
 
 app.Run();
+
+public sealed class InMemoryEventProducer : IEventProducer
+{
+    private readonly ILogger<InMemoryEventProducer> _logger;
+
+    public InMemoryEventProducer(ILogger<InMemoryEventProducer> logger)
+    {
+        _logger = logger;
+    }
+
+    public Task<Result> PublishAsync<T>(T message, EventMetadata? metadata = null, CancellationToken cancellationToken = default) where T : class
+    {
+        _logger.LogInformation("Evento {EventType} publicado em memÃ³ria", typeof(T).Name);
+        return Task.FromResult(Result.Success());
+    }
+
+    public Task<Result> PublishBatchAsync<T>(IEnumerable<T> messages, EventMetadata? metadata = null, CancellationToken cancellationToken = default) where T : class
+    {
+        _logger.LogInformation("Lote de eventos {EventType} publicado em memÃ³ria", typeof(T).Name);
+        return Task.FromResult(Result.Success());
+    }
+}
 
 public class SampleCalculator
 {
@@ -142,4 +160,3 @@ public class SampleCalculator
 }
 
 public partial class Program { }
-

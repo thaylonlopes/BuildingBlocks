@@ -1,6 +1,6 @@
 using System;
 
-namespace CommonHelpers.RequestResponse
+namespace TL.BaseContracts
 {
     /// <summary>
     /// Representa o resultado de uma operação sem retorno de valor, indicando sucesso ou falha com erro tipado.

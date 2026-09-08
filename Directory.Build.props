@@ -1,11 +1,11 @@
-<Project>
+﻿<Project>
   <PropertyGroup>
   
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
     <Authors>Thaylon Lopes</Authors>
-    <Company>TL</Company>
+    <Company>TL Engenharia</Company>
     <Product>TL.CommonHelpers</Product>
-    <Copyright>Copyright © 2026 Thaylon Lopes</Copyright>
+    <Copyright>Copyright Â© 2026 Thaylon Lopes</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/thaylonlopes/TL.CommonHelpers</RepositoryUrl>

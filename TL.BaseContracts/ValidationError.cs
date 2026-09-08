@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace CommonHelpers.RequestResponse
+namespace TL.BaseContracts
 {
     /// <summary>
     /// Representa um erro especializado de validação que transporta falhas detalhadas agrupadas por campo/propriedade.

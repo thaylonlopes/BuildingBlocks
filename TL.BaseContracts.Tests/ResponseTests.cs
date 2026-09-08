@@ -1,7 +1,7 @@
 using System;
 using FluentAssertions;
 
-namespace CommonHelpers.RequestResponse.Tests
+namespace TL.BaseContracts.Tests
 {
     public class ResponseTests
     {

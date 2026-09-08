@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace CommonHelpers.Messaging
+namespace TL.BaseContracts.Messaging
 {
     /// <summary>
     /// Metadados opcionais para enriquecimento do envio de mensagens e controle de provedores (Kafka, RabbitMQ, etc.).

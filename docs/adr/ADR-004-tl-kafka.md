@@ -1,4 +1,4 @@
-# ADR-004: Decisões Arquiteturais do Pacote CommonHelpers.Kafka
+# ADR-004: Decisões Arquiteturais do Pacote TL.Kafka
 
 ##  1. Contexto e Motivação
 

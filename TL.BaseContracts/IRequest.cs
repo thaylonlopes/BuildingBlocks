@@ -1,6 +1,6 @@
 using System;
 
-namespace CommonHelpers.RequestResponse
+namespace TL.BaseContracts
 {
     /// <summary>
     /// Contrato fundamental para identificar e rastrear requisições em microsserviços e pipelines corporativos.

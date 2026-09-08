@@ -1,7 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
+using TL.BaseContracts;
 
-namespace CommonHelpers.Messaging
+namespace TL.BaseContracts.Messaging
 {
     /// <summary>
     /// Contrato agnóstico (Port) para consumidores de eventos assíncronos.
@@ -9,8 +10,8 @@ namespace CommonHelpers.Messaging
     /// <typeparam name="T">O tipo do payload de dados contido no evento.</typeparam>
     /// <remarks>
     /// Os manipuladores implementam esta interface para processar eventos recebidos de qualquer broker.
-    /// Retornar <see cref="CommonHelpers.RequestResponse.Result.Success"/> sinaliza confirmação (ACK),
-    /// enquanto <see cref="CommonHelpers.RequestResponse.Result.Failure"/> direciona o evento para retentativa ou Dead-Letter Queue (DLQ).
+    /// Retornar <see cref="TL.BaseContracts.Result.Success"/> sinaliza confirmação (ACK),
+    /// enquanto <see cref="TL.BaseContracts.Result.Failure"/> direciona o evento para retentativa ou Dead-Letter Queue (DLQ).
     /// </remarks>
     /// <example>
     /// <code>
@@ -32,7 +33,7 @@ namespace CommonHelpers.Messaging
         /// <param name="eventMessage">Envelope completo contendo metadados, identificadores e o payload de negócio.</param>
         /// <param name="cancellationToken">Token de cancelamento da operação.</param>
         /// <returns>Resultado da execução indicando sucesso ou falha no processamento.</returns>
-        Task<CommonHelpers.RequestResponse.Result> HandleAsync(EventMessage<T> eventMessage, CancellationToken cancellationToken);
+        Task<TL.BaseContracts.Result> HandleAsync(EventMessage<T> eventMessage, CancellationToken cancellationToken);
     }
 }
 

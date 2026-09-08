@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace CommonHelpers.Messaging
+namespace TL.BaseContracts.Messaging
 {
     /// <summary>
     /// Envelope padronizado e imutável para transporte de eventos e mensagens assíncronas no ecossistema de microsserviços.

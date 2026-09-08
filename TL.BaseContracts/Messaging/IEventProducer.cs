@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using TL.BaseContracts;
 
-namespace CommonHelpers.Messaging
+namespace TL.BaseContracts.Messaging
 {
     /// <summary>
     /// Contrato agnóstico (Port) para publicação de eventos assíncronos no ecossistema de mensageria.
@@ -25,8 +26,8 @@ namespace CommonHelpers.Messaging
         /// <param name="message">A instância da mensagem a ser publicada.</param>
         /// <param name="metadata">Metadados opcionais para roteamento, partição ou cabeçalhos.</param>
         /// <param name="cancellationToken">Token de cancelamento da operação.</param>
-        /// <returns>Resultado da operação encapsulado em um <see cref="CommonHelpers.RequestResponse.Result"/>.</returns>
-        Task<CommonHelpers.RequestResponse.Result> PublishAsync<T>(
+        /// <returns>Resultado da operação encapsulado em um <see cref="TL.BaseContracts.Result"/>.</returns>
+        Task<TL.BaseContracts.Result> PublishAsync<T>(
             T message,
             EventMetadata? metadata = null,
             CancellationToken cancellationToken = default) where T : class;
@@ -38,8 +39,8 @@ namespace CommonHelpers.Messaging
         /// <param name="messages">A coleção de mensagens a serem publicadas.</param>
         /// <param name="metadata">Metadados opcionais aplicados ao lote.</param>
         /// <param name="cancellationToken">Token de cancelamento da operação.</param>
-        /// <returns>Resultado da operação encapsulado em um <see cref="CommonHelpers.RequestResponse.Result"/>.</returns>
-        Task<CommonHelpers.RequestResponse.Result> PublishBatchAsync<T>(
+        /// <returns>Resultado da operação encapsulado em um <see cref="TL.BaseContracts.Result"/>.</returns>
+        Task<TL.BaseContracts.Result> PublishBatchAsync<T>(
             IEnumerable<T> messages,
             EventMetadata? metadata = null,
             CancellationToken cancellationToken = default) where T : class;

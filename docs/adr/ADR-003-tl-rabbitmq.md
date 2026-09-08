@@ -1,4 +1,4 @@
-# ADR-003: Decisões Arquiteturais do Pacote CommonHelpers.RabbitMQ
+# ADR-003: Decisões Arquiteturais do Pacote TL.RabbitMQ
 
 ##  1. Contexto e Motivação
 

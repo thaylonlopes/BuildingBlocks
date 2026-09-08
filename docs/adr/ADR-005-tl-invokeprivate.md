@@ -1,4 +1,4 @@
-# ADR-005: Decisões Arquiteturais do Pacote CommonHelpers.InvokePrivate
+# ADR-005: Decisões Arquiteturais do Pacote TL.InvokePrivate
 
 
 ##  1. Contexto e Motivação

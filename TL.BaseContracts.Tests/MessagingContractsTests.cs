@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using CommonHelpers.Messaging;
 using FluentAssertions;
 
-namespace CommonHelpers.RequestResponse.Tests
+namespace TL.BaseContracts.Tests
 {
     public class MessagingContractsTests
     {

@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using FluentAssertions;
 
-namespace CommonHelpers.RequestResponse.Tests
+namespace TL.BaseContracts.Tests
 {
     public class PagedResultTests
     {
