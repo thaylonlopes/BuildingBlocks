@@ -11,9 +11,10 @@
 
 ## ⚠️ Nota de Boas Práticas & Arquitetura
 
-> [!WARNING]
-> Este pacote destina-se primariamente a **testes de regressão em bibliotecas legadas** e cenários diagnósticos pontuais onde o código original não pode ser refatorado.
-> Para novo desenvolvimento de código de produção, **evite quebrar o encapsulamento** e prefira modificadores `internal` combinados com `[InternalsVisibleTo]`.
+> [!CAUTION]
+> **PACOTE APOSENTADO / DEPRECATED (`<IsPackable>false</IsPackable>`)**
+> O pacote `TL.InvokePrivate` foi formalmente descontinuado a partir da versão 0.2.0 (`US-EVO-008`) e marcado com `[Obsolete]`. A publicação no NuGet foi desativada.
+> Para novo desenvolvimento de código de produção e testes modernos, **evite quebrar o encapsulamento** e prefira membros com modificador `internal` combinados com `[InternalsVisibleTo]`.
 
 ---
 

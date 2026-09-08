@@ -17,9 +17,10 @@ No entanto, a Reflection padrão em .NET embrulha qualquer exceção disparada d
 - `MethodInvoker.InvokePrivateMethod<TReturn>(instance, methodName, params)`: Para métodos síncronos com retorno tipado ou void.
 - `MethodInvoker.InvokePrivateMethodAsync(instance, methodName, params)`: Para métodos assíncronos que retornam `Task` ou `Task<T>`, aguardando a conclusão correta.
 
-### 2.3. Diretriz de Governança e Anotação `[Obsolete]`
+### 2.3. Diretriz de Governança, Anotação `[Obsolete]` e Aposentadoria
 - O componente foi marcado com `[Obsolete]` com mensagem explicativa e avisos no `README.md`, orientando que seu uso é restrito a **testes de regressão e compatibilidade com legados**.
 - Para novo código de produção, a boa prática orienta o uso do modificador `internal` combinado com `[InternalsVisibleTo]`.
+- A partir da versão `0.2.0` (`US-EVO-008`), o pacote foi oficialmente aposentado do ciclo de distribuição com a definição de `<IsPackable>false</IsPackable>`.
 
 
 ##  3. Consequências e Trade-offs

@@ -9,11 +9,11 @@ namespace CommonHelpers.InvokePrivate
     /// Utilitário baseado em Reflection para execução dinâmica de membros privados.
     /// </summary>
     /// <remarks>
-    /// 💡 **Nota de Boas Práticas:**
+    /// Nota de Boas Práticas:
     /// Esta classe destina-se primariamente a testes de regressão em bibliotecas legadas e diagnósticos pontuais onde o código-fonte original não pode ser refatorado.
-    /// Para novas implementações, prefira sempre o modificador <c>internal</c> combinado com <c>[InternalsVisibleTo]</c> para preservar o encapsulamento.
+    /// Para novas implementações, prefira sempre o modificador internal combinado com [InternalsVisibleTo] para preservar o encapsulamento.
     /// </remarks>
-    [Obsolete("Utilize apenas para suporte e compatibilidade com testes legados. Evite a quebra de encapsulamento em código de produção novo.")]
+    [Obsolete("Utilize membros internal com [InternalsVisibleTo] em vez de invocar métodos privados via Reflection.")]
     public static class MethodInvoker
     {
         /// <summary>
@@ -24,6 +24,7 @@ namespace CommonHelpers.InvokePrivate
         /// <param name="parameters">Parâmetros passados para o método.</param>
         /// <exception cref="ArgumentNullException">Lançada caso <paramref name="obj"/> ou <paramref name="methodName"/> seja nulo.</exception>
         /// <exception cref="MissingMethodException">Lançada se o método não for encontrado na classe.</exception>
+        [Obsolete("Utilize membros internal com [InternalsVisibleTo] em vez de invocar métodos privados via Reflection.")]
         public static void InvokePrivateMethod(object obj, string methodName, params object[] parameters)
         {
             if (obj == null) throw new ArgumentNullException(nameof(obj));
@@ -51,6 +52,7 @@ namespace CommonHelpers.InvokePrivate
         /// <param name="methodName">Nome do método privado a ser executado.</param>
         /// <param name="parameters">Parâmetros passados para o método.</param>
         /// <returns>O valor retornado pelo método privado ou o valor padrão do tipo.</returns>
+        [Obsolete("Utilize membros internal com [InternalsVisibleTo] em vez de invocar métodos privados via Reflection.")]
         public static T? InvokePrivateMethod<T>(object obj, string methodName, params object[] parameters)
         {
             if (obj == null) throw new ArgumentNullException(nameof(obj));
@@ -78,6 +80,7 @@ namespace CommonHelpers.InvokePrivate
         /// <param name="obj">Instância do objeto que contém o método privado.</param>
         /// <param name="methodName">Nome do método privado a ser executado.</param>
         /// <param name="parameters">Parâmetros passados para o método.</param>
+        [Obsolete("Utilize membros internal com [InternalsVisibleTo] em vez de invocar métodos privados via Reflection.")]
         public static async Task InvokePrivateMethodAsync(object obj, string methodName, params object[] parameters)
         {
             if (obj == null) throw new ArgumentNullException(nameof(obj));
@@ -112,6 +115,7 @@ namespace CommonHelpers.InvokePrivate
         /// <param name="methodName">Nome do método privado a ser executado.</param>
         /// <param name="parameters">Parâmetros passados para o método.</param>
         /// <returns>O valor retornado pela tarefa assíncrona.</returns>
+        [Obsolete("Utilize membros internal com [InternalsVisibleTo] em vez de invocar métodos privados via Reflection.")]
         public static async Task<T?> InvokePrivateMethodAsync<T>(object obj, string methodName, params object[] parameters)
         {
             if (obj == null) throw new ArgumentNullException(nameof(obj));

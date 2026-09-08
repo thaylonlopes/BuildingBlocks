@@ -5,6 +5,7 @@
     <PackageId>TL.InvokePrivate</PackageId>
     <Description>Utilitário para invocação dinâmica de membros privados via Reflection com desembrulho automático de exceções de negócio para compatibilidade em testes legados em .NET 6, .NET 8 e .NET 9.</Description>
     <PackageTags>reflection;invoke;private-methods;testing;legacy;csharp;dotnet;net6;net8;net9;tl</PackageTags>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
 </Project>
