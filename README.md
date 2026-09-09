@@ -30,8 +30,8 @@ O **TL.CommonHelpers** é uma coleção modular de blocos fundamentais de infrae
 
 1. **💎 Result Pattern, Paginação & Contratos ([`TL.BaseContracts`](TL.BaseContracts/README.md))**: `Result<T>` funcional com `ErrorType`, `PagedResult<T>` imutável com cálculo automático de páginas, `ValidationError` por campo e portas agnósticas de mensageria (`IEventProducer`, `IEventHandler<T>`, `EventMessage<T>`). **Zero dependências externas**.
 2. **🩺 Health Checks Padronizados ([`TL.HealthCheck`](TL.HealthCheck/README.md))**: Probes de *Liveness* (`/liveness`), *Readiness* (`/ready`) e dashboard com UI Client (`/health`) em uma única linha, para Web APIs e Worker Services em segundo plano.
-3. **🐰 Adaptador RabbitMQ ([`TL.RabbitMQ`](TL.RabbitMQ/README.md))**: Implementação de `IEventProducer` e `IRabbitMqProducer` com Publisher Confirms, Dead-Letter Queue (`.dlq`) automática e retentativas com Polly (migrado para repositório `Messaging`).
-4. **🦅 Adaptador Apache Kafka ([`TL.Kafka`](TL.Kafka/README.md))**: Implementação de `IEventProducer` e `IKafkaProducer` com Partition Keys, Dead Letter Topic (`.dlt`), idempotência e headers de telemetria (migrado para repositório `Messaging`).
+3. **🐰 Adaptador RabbitMQ ([`TL.RabbitMQ`](https://github.com/thaylonlopes/TL.Messaging))**: Implementação de `IEventProducer` e `IRabbitMqProducer` com Publisher Confirms, Dead-Letter Queue (`.dlq`) automática e retentativas com Polly (migrado para repositório [`TL.Messaging`](https://github.com/thaylonlopes/TL.Messaging)).
+4. **🦅 Adaptador Apache Kafka ([`TL.Kafka`](https://github.com/thaylonlopes/TL.Messaging))**: Implementação de `IEventProducer` e `IKafkaProducer` com Partition Keys, Dead Letter Topic (`.dlt`), idempotência e headers de telemetria (migrado para repositório [`TL.Messaging`](https://github.com/thaylonlopes/TL.Messaging)).
 5. **🔍 Invocação Segura de Membros Privados ([`TL.InvokePrivate`](TL.InvokePrivate/README.md))**: Utilitário baseado em Reflection para testes e código legado com desembrulho de `TargetInvocationException` (descontinuado).
 
 ---
@@ -42,8 +42,8 @@ O **TL.CommonHelpers** é uma coleção modular de blocos fundamentais de infrae
 | :--- | :---: | :--- | :--- |
 | [**`TL.BaseContracts`**](TL.BaseContracts/README.md) | `0.2.0` | `netstandard2.0; net8.0; net9.0` | Fundação canônica de contratos em BCL pura (Commands, Queries, Events, Results, Errors e Paginações). |
 | [**`TL.HealthCheck`**](TL.HealthCheck/README.md) | `0.1.0` | `net8.0; net9.0` | Probes de Liveness, Readiness, UI Client e Web Host para Workers. |
-| [**`TL.RabbitMQ`**](TL.RabbitMQ/README.md) | `0.1.0` | `net6.0; net8.0; net9.0` | Adaptador RabbitMQ com Publisher Confirms e DLQ automática. |
-| [**`TL.Kafka`**](TL.Kafka/README.md) | `0.1.0` | `net6.0; net8.0; net9.0` | Adaptador Kafka com Partition Keys, Idempotência e DLT. |
+| [**`TL.RabbitMQ`**](https://github.com/thaylonlopes/TL.Messaging) *(migrado)* | `0.1.0` | `net8.0; net9.0` | Adaptador RabbitMQ com Publisher Confirms e DLQ (migrado para [`TL.Messaging`](https://github.com/thaylonlopes/TL.Messaging)). |
+| [**`TL.Kafka`**](https://github.com/thaylonlopes/TL.Messaging) *(migrado)* | `0.1.0` | `net8.0; net9.0` | Adaptador Kafka com Partition Keys, Idempotência e DLT (migrado para [`TL.Messaging`](https://github.com/thaylonlopes/TL.Messaging)). |
 | [**`TL.InvokePrivate`**](TL.InvokePrivate/README.md) | `0.1.0` | `net6.0; net8.0; net9.0` | Reflection segura com desembrulho de exceções para legados. |
 
 ---

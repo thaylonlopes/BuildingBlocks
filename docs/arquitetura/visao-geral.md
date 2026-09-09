@@ -40,32 +40,29 @@ graph TD
         AppHost["Host Application<br/>(ASP.NET Core Web API / Worker Service)"]
     end
 
-    subgraph "CommonHelpers - Módulos de Produção"
+    subgraph "CommonHelpers - Módulos Ativos (v0.2.0)"
         RR["TL.BaseContracts<br/>(Result&lt;T&gt;, PagedResult&lt;T&gt;, ValidationError, IEventProducer)<br/>[netstandard2.0, net8.0, net9.0]"]
         HC["TL.HealthCheck<br/>(Liveness, Readiness, UI Client, Worker Host)<br/>[net8.0, net9.0]"]
-        RMQ["TL.RabbitMQ<br/>(RabbitMqProducer, DLQ, Polly Retry)<br/>[net6.0, net8.0, net9.0]"]
-        KFK["TL.Kafka<br/>(KafkaProducer, PartitionKey, DLT)<br/>[net6.0, net8.0, net9.0]"]
-        IP["TL.InvokePrivate<br/>(MethodInvoker com Desembrulho)<br/>[net6.0, net8.0, net9.0]"]
+        IP["TL.InvokePrivate<br/>(MethodInvoker com Desembrulho)<br/>[net6.0, net8.0, net9.0 - Aposentado]"]
     end
 
-    subgraph "Suítes de Testes Unitários (69 Testes - 100% Passing)"
+    subgraph "Repositório Externo Dedicado"
+        MSG["TL.Messaging<br/>(RabbitMQ &amp; Apache Kafka)<br/>[net8.0, net9.0]"]
+    end
+
+    subgraph "Suítes de Testes Unitários Ativas (69 Testes - 100% Passing)"
         RRTests["TL.BaseContracts.Tests (40 testes)"]
         HCTests["TL.HealthCheck.Tests (17 testes)"]
-        RMQTests["TL.RabbitMQ.Tests (5 testes)"]
-        KFKTests["TL.Kafka.Tests (5 testes)"]
         IPTests["TL.InvokePrivate.Tests (12 testes)"]
     end
 
     AppHost --> RR
     AppHost --> HC
-    AppHost --> RMQ
-    AppHost --> KFK
-    AppHost --> IP
+    AppHost -.-> IP
+    MSG -->|"Implementa Portas de"| RR
 
     RRTests -.->|"Valida"| RR
     HCTests -.->|"Valida"| HC
-    RMQTests -.->|"Valida"| RMQ
-    KFKTests -.->|"Valida"| KFK
     IPTests -.->|"Valida"| IP
 ```
 
@@ -77,17 +74,19 @@ graph TD
 | :--- | :--- | :--- | :--- | :--- |
 | **`TL.BaseContracts`** | Contratos / Result Pattern | `netstandard2.0`<br/>`net8.0`<br/>`net9.0` | **Zero (BCL pura)** | Result Pattern (`Result<T>`, `ErrorType`), paginação imutável (`PagedResult<T>`, `PagedRequest`), `ValidationError` e portas de mensageria (`IEventProducer`, `IEventHandler<T>`). |
 | **`TL.HealthCheck`** | Infra / Observabilidade | `net8.0`<br/>`net9.0` | `AspNetCore.HealthChecks.UI.Client`<br/>`Microsoft.Extensions.Diagnostics.HealthChecks` | Métodos de extensão para probes `/health`, `/ready` e `/liveness` em Web APIs e Worker Services. |
-| **`TL.RabbitMQ`** | Infra / Mensageria | `net6.0`<br/>`net8.0`<br/>`net9.0` | `RabbitMQ.Client`<br/>`Polly` | Adaptador AMQP com Publisher Confirms, Dead-Letter Queue (`.dlq`) automática e retentativas com Polly. |
-| **`TL.Kafka`** | Infra / Mensageria | `net6.0`<br/>`net8.0`<br/>`net9.0` | `Confluent.Kafka`<br/>`Polly` | Adaptador Apache Kafka com Partition Keys, Idempotência nativa e Dead Letter Topic (`.dlt`). |
-| **`TL.InvokePrivate`** | Utilitários / Reflection | `net6.0`<br/>`net8.0`<br/>`net9.0` | **Zero (BCL pura)** | Invocação de métodos privados síncronos/assíncronos com desembrulho de `TargetInvocationException` para legados. |
+| **`TL.RabbitMQ`** *(Migrado)* | Infra / Mensageria | `net8.0`<br/>`net9.0` | `RabbitMQ.Client`<br/>`Polly` | Adaptador AMQP (promovido na v0.2.0 para o repositório dedicado [`TL.Messaging`](https://github.com/thaylonlopes/TL.Messaging)). |
+| **`TL.Kafka`** *(Migrado)* | Infra / Mensageria | `net8.0`<br/>`net9.0` | `Confluent.Kafka`<br/>`Polly` | Adaptador Apache Kafka (promovido na v0.2.0 para o repositório dedicado [`TL.Messaging`](https://github.com/thaylonlopes/TL.Messaging)). |
+| **`TL.InvokePrivate`** *(Aposentado)* | Utilitários / Reflection | `net6.0`<br/>`net8.0`<br/>`net9.0` | **Zero (BCL pura)** | Invocação de métodos privados para legados. Descontinuado na v0.2.0 (`<IsPackable>false</IsPackable>`) e marcado como `[Obsolete]`. |
 
 ---
 
 ## 🏛️ 4. Catálogo de Decisões Arquiteturais (ADRs)
 
+> **Nota de Governança e Rastreabilidade:** As ADRs 003 e 004 são mantidas neste repositório como registro histórico imutável das decisões que deram origem aos adaptadores de mensageria antes de sua promoção para o repositório dedicado `TL.Messaging`.
+
 - [**`ADR-000: Arquitetura e Convenções da Suíte TL`**](../adr/ADR-000-arquitetura-e-convencoes.md)
 - [**`ADR-001: Decisões Arquiteturais do Pacote TL.BaseContracts`**](../adr/ADR-001-tl-basecontracts.md)
 - [**`ADR-002: Decisões Arquiteturais do Pacote TL.HealthCheck`**](../adr/ADR-002-tl-healthcheck.md)
-- [**`ADR-003: Decisões Arquiteturais do Pacote TL.RabbitMQ`**](../adr/ADR-003-tl-rabbitmq.md)
-- [**`ADR-004: Decisões Arquiteturais do Pacote TL.Kafka`**](../adr/ADR-004-tl-kafka.md)
-- [**`ADR-005: Decisões Arquiteturais do Pacote TL.InvokePrivate`**](../adr/ADR-005-tl-invokeprivate.md)
+- [**`ADR-003: Decisões Arquiteturais do Pacote TL.RabbitMQ`**](../adr/ADR-003-tl-rabbitmq.md) *(Histórico — Promovido para TL.Messaging)*
+- [**`ADR-004: Decisões Arquiteturais do Pacote TL.Kafka`**](../adr/ADR-004-tl-kafka.md) *(Histórico — Promovido para TL.Messaging)*
+- [**`ADR-005: Decisões Arquiteturais do Pacote TL.InvokePrivate`**](../adr/ADR-005-tl-invokeprivate.md) *(Histórico — Aposentado na v0.2.0)*
