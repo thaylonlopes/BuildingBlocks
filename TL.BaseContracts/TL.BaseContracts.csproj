@@ -12,20 +12,14 @@
     <Version>0.2.0</Version>
     <Authors>Thaylon Lopes</Authors>
     <Company>TL Engenharia</Company>
-    <Description>FundaÃ§Ã£o canÃ´nica e unificada de contratos em BCL pura (Commands, Queries, Events, Results, Errors e PaginaÃ§Ãµes) para aplicaÃ§Ãµes .NET modernas e legadas.</Description>
-    <Description>Fundação canônica e unificada de contratos em BCL pura (Commands, Queries, Events, Results, Errors e Paginações) para aplicações .NET modernas e legadas.</Description>
+    <Description>Fundação padronizada e unificada de contratos em BCL pura (Commands, Queries, Events, Results, Errors e Paginações) para aplicações .NET modernas e legadas.</Description>
     <PackageTags>contracts;result-pattern;cqrs;clean-architecture;ddd;error-handling;tl</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryUrl>https://github.com/thaylonlopes/TL.BuildingBlocks</RepositoryUrl>
+    <RepositoryUrl>https://github.com/thaylonlopes/BuildingBlocks</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)..\assets\icon.png" Pack="true" PackagePath="" Visible="false" Condition="Exists('$(MSBuildThisFileDirectory)..\assets\icon.png')" />
-    <None Include="README.md" Pack="true" PackagePath="" />
-  </ItemGroup>
 
 </Project>

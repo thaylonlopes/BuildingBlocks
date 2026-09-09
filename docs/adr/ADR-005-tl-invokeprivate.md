@@ -31,5 +31,5 @@ No entanto, a Reflection padrão em .NET embrulha qualquer exceção disparada d
 
 
 ##  4. Status de Verificação
-- Coberto por **12 testes unitários** no `CommonHelpers.InvokePrivate.Tests` (100% passing).
+- Coberto por **12 testes unitários** no `TL.InvokePrivate.Tests` (100% passing).
 

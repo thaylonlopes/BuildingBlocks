@@ -1,7 +1,7 @@
-# ADR-000: Arquitetura e Convenções da Suíte CommonHelpers
+# ADR-000: Arquitetura e Convenções da Suíte TL.BuildingBlocks
 ## 📋 1. Contexto e Motivação
 
-O ecossistema `CommonHelpers` foi estruturado para resolver o problema de proliferação de código utilitário duplicado, contratos inconsistentes e configurações de infraestrutura fragmentadas entre múltiplos microsserviços corporativos em .NET.
+O ecossistema **`TL.BuildingBlocks`** foi estruturado para fornecer a fundação oficial e padronizada de contratos, resiliência e infraestrutura compartilhada, eliminando a duplicação de boilerplate e configurações fragmentadas entre múltiplos microsserviços corporativos em .NET.
 
 A biblioteca tem como missão fornecer **blocos fundamentais de alta coesão e baixo acoplamento**, garantindo ergonomia para desenvolvedores, robustez contra falhas e integração simplificada em pipelines de nuvem e Kubernetes.
 

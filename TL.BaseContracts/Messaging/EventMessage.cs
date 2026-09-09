@@ -39,7 +39,7 @@ namespace TL.BaseContracts.Messaging
         public DateTimeOffset Timestamp { get; init; }
 
         /// <summary>
-        /// Nome qualificado ou identificador canônico do tipo de evento (ex: "orders.v1.created").
+        /// Nome qualificado ou identificador padronizado do tipo de evento (ex: "orders.v1.created").
         /// </summary>
         public string EventType { get; init; }
 

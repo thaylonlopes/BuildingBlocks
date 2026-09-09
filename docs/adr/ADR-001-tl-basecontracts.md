@@ -6,11 +6,11 @@ Em arquiteturas de microsserviços e Web APIs, o tratamento de fluxos de sucesso
 
 Adicionalmente, problemas comuns como **paginação** de listagens e **agrupamento de múltiplos erros de validação por campo** (FluentValidation / RFC 7807 ProblemDetails) eram reimplementados de forma dispersa e inconsistente em cada projeto.
 
-Na versão `0.2.0`, o pacote passou por um rebranding oficial de `TL.RequestResponse` para **`TL.BaseContracts`**, unificando contratos canônicos de entrada, saída e domínio em BCL pura com multi-targeting (`netstandard2.0;net8.0;net9.0`).
+Na versão `0.2.0`, o pacote passou por um rebranding oficial de `TL.RequestResponse` para **`TL.BaseContracts`**, unificando contratos padronizados de entrada, saída e domínio em BCL pura com multi-targeting (`netstandard2.0;net8.0;net9.0`).
 
 ## 🎯 2. Decisões Arquiteturais
 
-### 2.1. Adoção Canônica do Result Pattern
+### 2.1. Adoção Padronizada do Result Pattern
 - Implementação das classes imutáveis `Result<T>` e `Result` (não-genérico).
 - **Semântica de Erros Ricos**: `record Error` com categorização tipada (`ErrorType: Failure, Validation, NotFound, Conflict, Unauthorized, Forbidden`).
 - **Ergonomia Funcional**: Suporte a Pattern Matching via métodos `Match` e transformações via `Map`.

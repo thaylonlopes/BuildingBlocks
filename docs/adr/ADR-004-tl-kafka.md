@@ -31,5 +31,5 @@ Sem abstração, cada time criava consumidores com comportamentos divergentes (c
 
 
 ##  4. Status de Verificação
-- Coberto por **5 testes unitários** no `CommonHelpers.Kafka.Tests` (100% passing).
+- Coberto por **10 testes unitários** no repositório `TL.Messaging` (antigo `CommonHelpers.Kafka.Tests`, 100% passing).
 

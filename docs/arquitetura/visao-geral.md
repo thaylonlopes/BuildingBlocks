@@ -1,10 +1,10 @@
-# Visão Geral da Arquitetura — CommonHelpers
+# Visão Geral da Arquitetura — TL.BuildingBlocks
 
-##  1. Resumo Executivo
+## 📋 1. Resumo Executivo
 
-O **CommonHelpers** é uma suíte utilitária modular em C# projetada para fornecer blocos fundamentais de infraestrutura compartilhada, padronização de comunicação e utilitários transversais para microsserviços e bibliotecas corporativas com amplo suporte a runtimes (.NET 6, .NET 8 e .NET 9).
+O **TL.BuildingBlocks** é a fundação corporativa modular em C# projetada para fornecer blocos fundamentais de infraestrutura compartilhada, contratos padronizados de comunicação e utilitários transversais para microsserviços e bibliotecas com amplo suporte a runtimes (.NET Standard 2.0, .NET 8 e .NET 9).
 
-A biblioteca abrange 5 módulos de produção e suítes de testes unitários dedicadas:
+A biblioteca abrange os seguintes módulos e suítes de testes unitários dedicadas:
 1. **Result Pattern, Paginação & Contratos (`TL.BaseContracts`)**: `Result<T>` funcional com `ErrorType`, `PagedResult<T>` imutável, `ValidationError` por campo e portas agnósticas de mensageria (`IEventProducer`, `IEventHandler<T>`, `EventMessage<T>`). **Zero dependências externas**.
 2. **Configuração de Health Checks Padronizados (`TL.HealthCheck`)**: Extensões fluentes para configuração de liveness (`/liveness`), readiness (`/ready`) e dashboard (`/health`) com suporte a UI Client e Worker Services.
 3. **Adaptador RabbitMQ (`TL.RabbitMQ`)**: Implementação resiliente AMQP de `IEventProducer` e `IRabbitMqProducer` com Publisher Confirms, Dead-Letter Queue (`.dlq`) automática e Polly (migrado para `TL.Messaging`).
@@ -23,13 +23,13 @@ graph TD
     Prometheus["Sistemas de Observabilidade<br/>[Kubernetes / Prometheus / Grafana]"]
     Brokers["Brokers de Mensageria<br/>[RabbitMQ / Apache Kafka]"]
 
-    subgraph CommonHelpersSystem ["CommonHelpers (Suíte Modular Multi-Target)"]
-        CH["CommonHelpers Suite<br/>[netstandard2.0 / net8.0 / net9.0]"]
+    subgraph BuildingBlocksSystem ["TL.BuildingBlocks (Fundação Modular Multi-Target)"]
+        BB["TL.BuildingBlocks Suite<br/>[netstandard2.0 / net8.0 / net9.0]"]
     end
 
-    Client -->|"Consome Result Pattern, Paginação e IEventProducer"| CH
-    CH -->|"Publica/Consome eventos assíncronos via"| Brokers
-    Prometheus -->|"Sonda probes de liveness e readiness configurados via"| CH
+    Client -->|"Consome Result Pattern, Paginação e IEventProducer"| BB
+    BB -->|"Publica/Consome eventos assíncronos via"| Brokers
+    Prometheus -->|"Sonda probes de liveness e readiness configurados via"| BB
 ```
 
 ### 2.2 Nível 2: Diagrama de Containers (C4 Container)
@@ -40,7 +40,7 @@ graph TD
         AppHost["Host Application<br/>(ASP.NET Core Web API / Worker Service)"]
     end
 
-    subgraph "CommonHelpers - Módulos Ativos (v0.2.0)"
+    subgraph "TL.BuildingBlocks - Módulos Ativos (v0.2.0)"
         RR["TL.BaseContracts<br/>(Result&lt;T&gt;, PagedResult&lt;T&gt;, ValidationError, IEventProducer)<br/>[netstandard2.0, net8.0, net9.0]"]
         HC["TL.HealthCheck<br/>(Liveness, Readiness, UI Client, Worker Host)<br/>[net8.0, net9.0]"]
         IP["TL.InvokePrivate<br/>(MethodInvoker com Desembrulho)<br/>[net6.0, net8.0, net9.0 - Aposentado]"]
@@ -84,7 +84,7 @@ graph TD
 
 > **Nota de Governança e Rastreabilidade:** As ADRs 003 e 004 são mantidas neste repositório como registro histórico imutável das decisões que deram origem aos adaptadores de mensageria antes de sua promoção para o repositório dedicado `TL.Messaging`.
 
-- [**`ADR-000: Arquitetura e Convenções da Suíte TL`**](../adr/ADR-000-arquitetura-e-convencoes.md)
+- [**`ADR-000: Arquitetura e Convenções da Suíte TL.BuildingBlocks`**](../adr/ADR-000-arquitetura-e-convencoes.md)
 - [**`ADR-001: Decisões Arquiteturais do Pacote TL.BaseContracts`**](../adr/ADR-001-tl-basecontracts.md)
 - [**`ADR-002: Decisões Arquiteturais do Pacote TL.HealthCheck`**](../adr/ADR-002-tl-healthcheck.md)
 - [**`ADR-003: Decisões Arquiteturais do Pacote TL.RabbitMQ`**](../adr/ADR-003-tl-rabbitmq.md) *(Histórico — Promovido para TL.Messaging)*

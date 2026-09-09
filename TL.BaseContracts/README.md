@@ -1,6 +1,6 @@
 # 💎 TL.BaseContracts
 
-> Fundação canônica e unificada de contratos em BCL pura (Commands, Queries, Events, Results, Errors e Paginações) para aplicações .NET modernas e legadas (.NET Standard 2.0, .NET 8 e .NET 9).
+> Fundação padronizada e unificada de contratos em BCL pura (Commands, Queries, Events, Results, Errors e Paginações) para aplicações .NET modernas e legadas (.NET Standard 2.0, .NET 8 e .NET 9).
 
 [![.NET Standard 2.0](https://img.shields.io/badge/.NET%20Standard-2.0-purple.svg)](https://dotnet.microsoft.com/)
 [![.NET 8.0](https://img.shields.io/badge/.NET-8.0%20(LTS)-blue.svg)](https://dotnet.microsoft.com/)
@@ -170,6 +170,6 @@ Result<UserDto> modernResult = legacyResponse.ToResult();
 ---
 
 ##  Compatibilidade & Princípios
-- **.NET 6.0**, **.NET 8.0** (LTS) e **.NET 9.0**
+- **.NET Standard 2.0**, **.NET 8.0** (LTS) e **.NET 9.0**
 - **Zero Dependências Externas** (100% BCL Pura).
 - **Invariantes Protegidas**: `IsSuccess` é estritamente falso quando existem mensagens de erro.

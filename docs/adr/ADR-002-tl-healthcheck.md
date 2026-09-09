@@ -43,5 +43,5 @@ Configurar esses endpoints manualmente em cada microsserviço ou Worker Service 
 - Integração transparente e sem fricção com orquestradores de nuvem e ferramentas como Prometheus / Datadog.
 
 ##  4. Status de Verificação
-- Coberto por **17 testes unitários** no `CommonHelpers.HealthCheck.Tests` (100% passing).
+- Coberto por **17 testes unitários** no `TL.HealthCheck.Tests` (100% passing).
 

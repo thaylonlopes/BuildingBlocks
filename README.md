@@ -1,6 +1,6 @@
-#  CommonHelpers
+# 💎 TL.BuildingBlocks
 
-> Suíte utilitária modular em .NET para acelerar a construção de microsserviços, Web APIs e Worker Services com Result Pattern, Health Checks padronizados e mensageria resiliente (RabbitMQ & Kafka).
+> Fundação e espinha dorsal modular em .NET para acelerar a construção de microsserviços, Web APIs e Worker Services com Result Pattern, Health Checks padronizados e contratos de arquitetura.
 
 [![.NET Standard 2.0](https://img.shields.io/badge/.NET%20Standard-2.0-purple.svg)](https://dotnet.microsoft.com/)
 [![.NET 8.0](https://img.shields.io/badge/.NET-8.0%20(LTS)-blue.svg)](https://dotnet.microsoft.com/)
@@ -12,7 +12,7 @@
 
 ## 📑 Sumário
 
-- [🌟 O que é o TL.CommonHelpers?](#-o-que-é-o-tlcommonhelpers)
+- [🌟 O que é o TL.BuildingBlocks?](#-o-que-é-o-tlbuildingblocks)
 - [📦 Pacotes NuGet](#-pacotes-nuget)
 - [🚀 Guia de Início Rápido](#-guia-de-início-rápido)
   - [1. Mensageria Agnóstica (Ports & Adapters)](#1-mensageria-agnóstica-ports--adapters)
@@ -24,9 +24,9 @@
 
 ---
 
-## 🌟 O que é o TL.CommonHelpers?
+## 🌟 O que é o TL.BuildingBlocks?
 
-O **TL.CommonHelpers** é uma coleção modular de blocos fundamentais de infraestrutura, comunicação e resiliência projetada para eliminar código boilerplate repetitivo em microsserviços .NET:
+O **TL.BuildingBlocks** é a fundação corporativa de blocos fundamentais de infraestrutura, comunicação e resiliência projetada para eliminar código boilerplate repetitivo em microsserviços .NET:
 
 1. **💎 Result Pattern, Paginação & Contratos ([`TL.BaseContracts`](TL.BaseContracts/README.md))**: `Result<T>` funcional com `ErrorType`, `PagedResult<T>` imutável com cálculo automático de páginas, `ValidationError` por campo e portas agnósticas de mensageria (`IEventProducer`, `IEventHandler<T>`, `EventMessage<T>`). **Zero dependências externas**.
 2. **🩺 Health Checks Padronizados ([`TL.HealthCheck`](TL.HealthCheck/README.md))**: Probes de *Liveness* (`/liveness`), *Readiness* (`/ready`) e dashboard com UI Client (`/health`) em uma única linha, para Web APIs e Worker Services em segundo plano.
@@ -40,7 +40,7 @@ O **TL.CommonHelpers** é uma coleção modular de blocos fundamentais de infrae
 
 | Pacote NuGet | Versão | Runtimes Suportados | Descrição & Documentação |
 | :--- | :---: | :--- | :--- |
-| [**`TL.BaseContracts`**](TL.BaseContracts/README.md) | `0.2.0` | `netstandard2.0; net8.0; net9.0` | Fundação canônica de contratos em BCL pura (Commands, Queries, Events, Results, Errors e Paginações). |
+| [**`TL.BaseContracts`**](TL.BaseContracts/README.md) | `0.2.0` | `netstandard2.0; net8.0; net9.0` | Fundação padronizada de contratos em BCL pura (Commands, Queries, Events, Results, Errors e Paginações). |
 | [**`TL.HealthCheck`**](TL.HealthCheck/README.md) | `0.1.0` | `net8.0; net9.0` | Probes de Liveness, Readiness, UI Client e Web Host para Workers. |
 | [**`TL.RabbitMQ`**](https://github.com/thaylonlopes/TL.Messaging) *(migrado)* | `0.1.0` | `net8.0; net9.0` | Adaptador RabbitMQ com Publisher Confirms e DLQ (migrado para [`TL.Messaging`](https://github.com/thaylonlopes/TL.Messaging)). |
 | [**`TL.Kafka`**](https://github.com/thaylonlopes/TL.Messaging) *(migrado)* | `0.1.0` | `net8.0; net9.0` | Adaptador Kafka com Partition Keys, Idempotência e DLT (migrado para [`TL.Messaging`](https://github.com/thaylonlopes/TL.Messaging)). |
@@ -102,7 +102,7 @@ public async Task<IActionResult> GetUsers([FromQuery] PagedRequest request)
 ### 3. Health Checks Padronizados em 1 Linha
 
 ```csharp
-using CommonHelpers.HealthCheck;
+using TL.HealthCheck;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRequiredHealthChecks();
@@ -117,12 +117,12 @@ app.Run();
 
 ### 4. Showcase & API Executável
 
-Criamos um projeto completo e executável em [`examples/CommonHelpers.Showcase.Api`](examples/CommonHelpers.Showcase.Api) com **Swagger UI** demonstrando na prática o uso integrado dos pacotes.
+Criamos um projeto completo e executável em [`examples/BuildingBlocks.Showcase.Api`](examples/BuildingBlocks.Showcase.Api) com **Swagger UI** demonstrando na prática o uso integrado dos pacotes.
 
 Para executar localmente:
 
 ```powershell
-dotnet run --project examples/CommonHelpers.Showcase.Api
+dotnet run --project examples/BuildingBlocks.Showcase.Api
 ```
 Acesse o Swagger interativo em: **`http://localhost:5000`**.
 
@@ -130,17 +130,17 @@ Acesse o Swagger interativo em: **`http://localhost:5000`**.
 
 ## 🧪 Executando os Testes
 
-Para rodar todos os **69 testes unitários** da solução:
+Para rodar todos os **69 testes unitários** da solução `BuildingBlocks.sln`:
 
 ```powershell
-dotnet test
+dotnet test BuildingBlocks.sln
 ```
 
 ---
 
 ## 🏛️ Catálogo de Decisões Arquiteturais (ADRs)
 
-- [**`ADR-000: Arquitetura e Convenções da Suíte CommonHelpers`**](docs/adr/ADR-000-arquitetura-e-convencoes.md)
+- [**`ADR-000: Arquitetura e Convenções da Suíte TL.BuildingBlocks`**](docs/adr/ADR-000-arquitetura-e-convencoes.md)
 - [**`ADR-001: Decisões Arquiteturais do Pacote TL.BaseContracts`**](docs/adr/ADR-001-tl-basecontracts.md)
 - [**`ADR-002: Decisões Arquiteturais do Pacote TL.HealthCheck`**](docs/adr/ADR-002-tl-healthcheck.md)
 - [**`ADR-003: Decisões Arquiteturais do Pacote TL.RabbitMQ`**](docs/adr/ADR-003-tl-rabbitmq.md)
