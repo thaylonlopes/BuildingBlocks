@@ -20,7 +20,7 @@
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
   
-  <PropertyGroup Condition="!$(MSBuildProjectName.EndsWith('.Tests')) And !$(MSBuildProjectName.EndsWith('.Showcase.Api'))">
+  <PropertyGroup Condition="!$(MSBuildProjectName.EndsWith('.Tests')) And !$(MSBuildProjectName.EndsWith('.Showcase.Api')) And !$(MSBuildProjectName.EndsWith('.Benchmarks'))">
     <IsPackable>true</IsPackable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -33,7 +33,7 @@
     <None Include="$(MSBuildThisFileDirectory)assets\icon.png" Pack="true" PackagePath="\" Visible="false" Condition="Exists('$(MSBuildThisFileDirectory)assets\icon.png')" />
   </ItemGroup>
   
-  <PropertyGroup Condition="$(MSBuildProjectName.EndsWith('.Tests')) Or $(MSBuildProjectName.EndsWith('.Showcase.Api'))">
+  <PropertyGroup Condition="$(MSBuildProjectName.EndsWith('.Tests')) Or $(MSBuildProjectName.EndsWith('.Showcase.Api')) Or $(MSBuildProjectName.EndsWith('.Benchmarks'))">
     <IsPackable>false</IsPackable>
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>

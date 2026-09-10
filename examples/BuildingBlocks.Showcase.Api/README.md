@@ -27,7 +27,12 @@ A aplicação iniciará e o **Swagger UI** estará acessível na raiz:
 | **`HealthCheck`** | `GET /health` | Diagnóstico de subsistemas (SQL, AMQP, API) formatado para UI Client. |
 | **`HealthCheck`** | `GET /liveness` | Sonda de vivacidade para orquestradores (Kubernetes / Docker). |
 | **`HealthCheck`** | `GET /ready` | Sonda de prontidão para recebimento de tráfego. |
-| **`Messaging`** | *Background Event* | Processamento desacoplado de eventos em memória via `OrderCreatedHandler`. |
 | **`InvokePrivate`** | `GET /api/diagnostics/reflection-demo` | Invocação controlada de método privado com desembrulho de exceções (marcado como Obsolete). |
+| **`MiddlewareLibrary`** | `GET /api/middlewares/timing` | Medição de latência com zero alocação via cabeçalho `X-Response-Time-Ms`. |
+| **`MiddlewareLibrary`** | `GET /api/middlewares/cache` | Cache em memória transparente para requisições GET com cabeçalho `X-Cache` (HIT/MISS). |
+| **`MiddlewareLibrary`** | `GET /api/middlewares/validation-error` | Resposta RFC 7807 (400) com dicionário de campos do `ValidationError` de `TL.BaseContracts`. |
+| **`MiddlewareLibrary`** | `GET /api/middlewares/not-found-error` | Resposta RFC 7807 (404) para `NotFoundException` via `StatusCodeMiddleware`. |
+| **`MiddlewareLibrary`** | `GET /api/middlewares/unhandled-crash` | Fallback global RFC 7807 (500) com rastreabilidade via `X-Correlation-Id`. |
+
 
 

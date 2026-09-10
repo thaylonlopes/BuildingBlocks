@@ -7,9 +7,10 @@ O **TL.BuildingBlocks** é a fundação corporativa modular em C# projetada para
 A biblioteca abrange os seguintes módulos e suítes de testes unitários dedicadas:
 1. **Result Pattern, Paginação & Contratos (`TL.BaseContracts`)**: `Result<T>` funcional com `ErrorType`, `PagedResult<T>` imutável, `ValidationError` por campo e portas agnósticas de mensageria (`IEventProducer`, `IEventHandler<T>`, `EventMessage<T>`). **Zero dependências externas**.
 2. **Configuração de Health Checks Padronizados (`TL.HealthCheck`)**: Extensões fluentes para configuração de liveness (`/liveness`), readiness (`/ready`) e dashboard (`/health`) com suporte a UI Client e Worker Services.
-3. **Adaptador RabbitMQ (`TL.RabbitMQ`)**: Implementação resiliente AMQP de `IEventProducer` e `IRabbitMqProducer` com Publisher Confirms, Dead-Letter Queue (`.dlq`) automática e Polly (migrado para `TL.Messaging`).
-4. **Adaptador Apache Kafka (`TL.Kafka`)**: Implementação resiliente de `IEventProducer` e `IKafkaProducer` com Partition Keys para ordenação, idempotência nativa e Dead Letter Topic (`.dlt`) (migrado para `TL.Messaging`).
-5. **Invocação Dinâmica de Membros Privados (`TL.InvokePrivate`)**: Utilitário baseado em Reflection para testes e suporte a legados com desembrulho de `TargetInvocationException` (descontinuado).
+3. **Pipeline HTTP & Resiliência RFC 7807 (`TL.MiddlewareLibrary`)**: Suíte de 6 middlewares modulares (medição de latência zero-allocation, rate limiting por IP, cache em memória com buffer pooling, captura global de exceções e padronização RFC 7807 com `TL.BaseContracts`).
+4. **Adaptador RabbitMQ (`TL.RabbitMQ`)**: Implementação resiliente AMQP de `IEventProducer` e `IRabbitMqProducer` com Publisher Confirms, Dead-Letter Queue (`.dlq`) automática e Polly (migrado para `TL.Messaging`).
+5. **Adaptador Apache Kafka (`TL.Kafka`)**: Implementação resiliente de `IEventProducer` e `IKafkaProducer` com Partition Keys para ordenação, idempotência nativa e Dead Letter Topic (`.dlt`) (migrado para `TL.Messaging`).
+6. **Invocação Dinâmica de Membros Privados (`TL.InvokePrivate`)**: Utilitário baseado em Reflection para testes e suporte a legados com desembrulho de `TargetInvocationException` (descontinuado, sem empacotamento).
 
 ---
 
@@ -27,7 +28,7 @@ graph TD
         BB["TL.BuildingBlocks Suite<br/>[netstandard2.0 / net8.0 / net9.0]"]
     end
 
-    Client -->|"Consome Result Pattern, Paginação e IEventProducer"| BB
+    Client -->|"Consome Result Pattern, Middlewares HTTP e IEventProducer"| BB
     BB -->|"Publica/Consome eventos assíncronos via"| Brokers
     Prometheus -->|"Sonda probes de liveness e readiness configurados via"| BB
 ```
@@ -43,6 +44,7 @@ graph TD
     subgraph "TL.BuildingBlocks - Módulos Ativos (v0.2.0)"
         RR["TL.BaseContracts<br/>(Result&lt;T&gt;, PagedResult&lt;T&gt;, ValidationError, IEventProducer)<br/>[netstandard2.0, net8.0, net9.0]"]
         HC["TL.HealthCheck<br/>(Liveness, Readiness, UI Client, Worker Host)<br/>[net8.0, net9.0]"]
+        ML["TL.MiddlewareLibrary<br/>(Pipeline HTTP, Zero-Allocation Timing, Rate Limiting, RFC 7807)<br/>[net8.0, net9.0]"]
         IP["TL.InvokePrivate<br/>(MethodInvoker com Desembrulho)<br/>[net6.0, net8.0, net9.0 - Aposentado]"]
     end
 
@@ -50,19 +52,23 @@ graph TD
         MSG["TL.Messaging<br/>(RabbitMQ &amp; Apache Kafka)<br/>[net8.0, net9.0]"]
     end
 
-    subgraph "Suítes de Testes Unitários Ativas (69 Testes - 100% Passing)"
+    subgraph "Suítes de Testes Automatizados Ativas (102 Testes - 100% Passing)"
         RRTests["TL.BaseContracts.Tests (40 testes)"]
         HCTests["TL.HealthCheck.Tests (17 testes)"]
+        MLTests["TL.MiddlewareLibrary.Tests (33 testes)"]
         IPTests["TL.InvokePrivate.Tests (12 testes)"]
     end
 
     AppHost --> RR
     AppHost --> HC
+    AppHost --> ML
     AppHost -.-> IP
+    ML -->|"Utiliza Error &amp; ValidationError de"| RR
     MSG -->|"Implementa Portas de"| RR
 
     RRTests -.->|"Valida"| RR
     HCTests -.->|"Valida"| HC
+    MLTests -.->|"Valida"| ML
     IPTests -.->|"Valida"| IP
 ```
 
@@ -74,9 +80,10 @@ graph TD
 | :--- | :--- | :--- | :--- | :--- |
 | **`TL.BaseContracts`** | Contratos / Result Pattern | `netstandard2.0`<br/>`net8.0`<br/>`net9.0` | **Zero (BCL pura)** | Result Pattern (`Result<T>`, `ErrorType`), paginação imutável (`PagedResult<T>`, `PagedRequest`), `ValidationError` e portas de mensageria (`IEventProducer`, `IEventHandler<T>`). |
 | **`TL.HealthCheck`** | Infra / Observabilidade | `net8.0`<br/>`net9.0` | `AspNetCore.HealthChecks.UI.Client`<br/>`Microsoft.Extensions.Diagnostics.HealthChecks` | Métodos de extensão para probes `/health`, `/ready` e `/liveness` em Web APIs e Worker Services. |
+| **`TL.MiddlewareLibrary`** | Pipeline HTTP / Resiliência | `net8.0`<br/>`net9.0` | `TL.BaseContracts` | Suíte modular de 6 middlewares (diagnóstico de latência zero-allocation, rate limiting por IP, cache em memória, captura global de exceções e padronização RFC 7807). |
 | **`TL.RabbitMQ`** *(Migrado)* | Infra / Mensageria | `net8.0`<br/>`net9.0` | `RabbitMQ.Client`<br/>`Polly` | Adaptador AMQP (promovido na v0.2.0 para o repositório dedicado [`TL.Messaging`](https://github.com/thaylonlopes/TL.Messaging)). |
 | **`TL.Kafka`** *(Migrado)* | Infra / Mensageria | `net8.0`<br/>`net9.0` | `Confluent.Kafka`<br/>`Polly` | Adaptador Apache Kafka (promovido na v0.2.0 para o repositório dedicado [`TL.Messaging`](https://github.com/thaylonlopes/TL.Messaging)). |
-| **`TL.InvokePrivate`** *(Aposentado)* | Utilitários / Reflection | `net6.0`<br/>`net8.0`<br/>`net9.0` | **Zero (BCL pura)** | Invocação de métodos privados para legados. Descontinuado na v0.2.0 (`<IsPackable>false</IsPackable>`) e marcado como `[Obsolete]`. |
+| **`TL.InvokePrivate`** *(Descontinuado)* | Utilitários / Reflection | `net6.0`<br/>`net8.0`<br/>`net9.0` | **Zero (BCL pura)** | Invocação de métodos privados para legados. Descontinuado na v0.2.0 (`<IsPackable>false</IsPackable>`) e marcado como `[Obsolete]`. |
 
 ---
 
@@ -89,4 +96,5 @@ graph TD
 - [**`ADR-002: Decisões Arquiteturais do Pacote TL.HealthCheck`**](../adr/ADR-002-tl-healthcheck.md)
 - [**`ADR-003: Decisões Arquiteturais do Pacote TL.RabbitMQ`**](../adr/ADR-003-tl-rabbitmq.md) *(Histórico — Promovido para TL.Messaging)*
 - [**`ADR-004: Decisões Arquiteturais do Pacote TL.Kafka`**](../adr/ADR-004-tl-kafka.md) *(Histórico — Promovido para TL.Messaging)*
-- [**`ADR-005: Decisões Arquiteturais do Pacote TL.InvokePrivate`**](../adr/ADR-005-tl-invokeprivate.md) *(Histórico — Aposentado na v0.2.0)*
+- [**`ADR-005: Decisões Arquiteturais do Pacote TL.InvokePrivate`**](../adr/ADR-005-tl-invokeprivate.md) *(Histórico — descontinuado na v0.2.0)*
+- [**`ADR-006: Pipeline HTTP, Resiliência e Padronização de Erros RFC 7807 (TL.MiddlewareLibrary)`**](../adr/ADR-006-tl-middlewarelibrary.md)
