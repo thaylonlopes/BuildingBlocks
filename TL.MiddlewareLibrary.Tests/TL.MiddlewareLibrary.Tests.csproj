@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\TL.BaseContracts\TL.BaseContracts.csproj" />
     <ProjectReference Include="..\TL.MiddlewareLibrary\TL.MiddlewareLibrary.csproj" />
+    <ProjectReference Include="..\examples\BuildingBlocks.Showcase.Api\BuildingBlocks.Showcase.Api.csproj" />
   </ItemGroup>
 
   <ItemGroup>
