@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PackageId>TL.Resilience</PackageId>
+    <Description>Módulo de resiliência corporativa com Polly v8 para microsserviços e Web APIs em .NET 8 e .NET 9, oferecendo políticas padronizadas de Retry, Exponential Backoff com Decorrelated Jitter, Circuit Breaker e Timeout com suporte a ILogger e CancellationToken.</Description>
+    <PackageTags>resilience;polly;polly-v8;retry;jitter;circuit-breaker;timeout;httpclient;tl;buildingblocks</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Polly.Core" />
+    <PackageReference Include="Microsoft.Extensions.Http" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+  </ItemGroup>
+
+</Project>
