@@ -51,6 +51,26 @@ namespace TL.BaseContracts.Messaging
         public string? CorrelationId { get; set; }
 
         /// <summary>
+        /// Identificador da mensagem causadora direta deste evento no fluxo assíncrono.
+        /// </summary>
+        public string? CausationId { get; set; }
+
+        /// <summary>
+        /// Identificador exclusivo do inquilino/empresa para ambientes corporativos multi-tenant.
+        /// </summary>
+        public string? TenantId { get; set; }
+
+        /// <summary>
+        /// Identificador do usuário ou ator que disparou a ação original.
+        /// </summary>
+        public string? UserId { get; set; }
+
+        /// <summary>
+        /// Identificador exclusivo da mensagem para fins de idempotência e deduplicação.
+        /// </summary>
+        public string? MessageId { get; set; }
+
+        /// <summary>
         /// Dicionário de cabeçalhos adicionais anexados ao envelope da mensagem.
         /// </summary>
         public IDictionary<string, string> Headers { get; set; } = new Dictionary<string, string>();
@@ -85,6 +105,50 @@ namespace TL.BaseContracts.Messaging
         public EventMetadata WithCorrelationId(string correlationId)
         {
             CorrelationId = correlationId;
+            return this;
+        }
+
+        /// <summary>
+        /// Define o identificador da mensagem causadora.
+        /// </summary>
+        /// <param name="causationId">Identificador da mensagem que provocou este evento.</param>
+        /// <returns>A própria instância para encadeamento fluente.</returns>
+        public EventMetadata WithCausationId(string causationId)
+        {
+            CausationId = causationId;
+            return this;
+        }
+
+        /// <summary>
+        /// Define o identificador do inquilino para ambientes multi-tenant.
+        /// </summary>
+        /// <param name="tenantId">Identificador exclusivo do tenant.</param>
+        /// <returns>A própria instância para encadeamento fluente.</returns>
+        public EventMetadata WithTenantId(string tenantId)
+        {
+            TenantId = tenantId;
+            return this;
+        }
+
+        /// <summary>
+        /// Define o identificador do usuário autor da ação.
+        /// </summary>
+        /// <param name="userId">Identificador do usuário.</param>
+        /// <returns>A própria instância para encadeamento fluente.</returns>
+        public EventMetadata WithUserId(string userId)
+        {
+            UserId = userId;
+            return this;
+        }
+
+        /// <summary>
+        /// Define o identificador determinístico da mensagem para deduplicação.
+        /// </summary>
+        /// <param name="messageId">Identificador da mensagem.</param>
+        /// <returns>A própria instância para encadeamento fluente.</returns>
+        public EventMetadata WithMessageId(string messageId)
+        {
+            MessageId = messageId;
             return this;
         }
 

@@ -192,7 +192,19 @@ public sealed class InMemoryEventProducer : IEventProducer
         _logger = logger;
     }
 
-    public Task<Result> PublishAsync<T>(T message, EventMetadata? metadata = null, CancellationToken cancellationToken = default) where T : class
+    public Task PublishAsync<T>(T message, CancellationToken cancellationToken = default) where T : class
+    {
+        _logger.LogInformation("Evento {EventType} publicado em memória", typeof(T).Name);
+        return Task.CompletedTask;
+    }
+
+    public Task PublishAsync<T>(string topicOrExchange, T message, CancellationToken cancellationToken = default) where T : class
+    {
+        _logger.LogInformation("Evento {EventType} publicado no destino {Destination}", typeof(T).Name, topicOrExchange);
+        return Task.CompletedTask;
+    }
+
+    public Task<Result> PublishAsync<T>(T message, EventMetadata? metadata, CancellationToken cancellationToken = default) where T : class
     {
         _logger.LogInformation("Evento {EventType} publicado em memória", typeof(T).Name);
         return Task.FromResult(Result.Success());
