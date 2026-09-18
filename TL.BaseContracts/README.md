@@ -14,7 +14,7 @@
 Adicione o pacote ao seu projeto via .NET CLI:
 
 ```bash
-dotnet add package TL.BaseContracts --version 0.2.0
+dotnet add package TL.BaseContracts
 ```
 
 ---
