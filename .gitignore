@@ -1,12 +1,13 @@
-# =============================================================================
-# 🔒 ARQUIVOS E PASTAS OCULTAS LOCAIS (ESTRATÉGIA WHITELIST / DENY-BY-DEFAULT)
+﻿# =============================================================================
+# ARQUIVOS E PASTAS OCULTAS LOCAIS (ESTRATEGIA WHITELIST / DENY-BY-DEFAULT)
 # =============================================================================
 .*
 scratchpad.md
 **/scratchpad.md
+
+# Allowlist de Excecoes Publicas do Repositorio:
 !.gitignore
 !.gitattributes
-!.editorconfig
 !.dockerignore
 !.github/
 !.github/**
@@ -16,28 +17,76 @@ scratchpad.md
 !.devcontainer/**
 
 # =============================================================================
-# 🛠️ .NET / VISUAL STUDIO BUILD ARTIFACTS
+# .NET / C# COMPILATION & BUILD OUTPUTS
 # =============================================================================
 [Bb]in/
 [Oo]bj/
+[Oo]ut/
+[Bb]uild/
+artifacts/
+BenchmarkDotNet.Artifacts/
+Generated\ Files/
 [Ll]og/
 [Ll]ogs/
-nupkgs/
-packages/
-TestResults/
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
-*.userprefs
-*.dbmdl
+*.binlog
 
 # =============================================================================
-# 💥 DUMPS, PROFILING & COVERAGE
+# NUGET & PACKAGES
 # =============================================================================
+nupkgs/
+packages/
+*.nupkg
+*.snupkg
+*.nuget.props
+*.nuget.targets
+project.lock.json
+project.fragment.lock.json
+
+# =============================================================================
+# TESTES, COBERTURA & DUMPS
+# =============================================================================
+[Tt]est[Rr]esult*/
+TestResult.xml
+*.trx
+*.coverage
+*.coveragexml
 *.stackdump
 *.dmp
 *.crash
 *.prof
-*.coverage
-*.coveragexml
+
+# =============================================================================
+# VISUAL STUDIO / IDES / ARQUIVOS PESSOAIS DO DEV
+# =============================================================================
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+*.dbmdl
+*.opendb
+
+# =============================================================================
+# SEGREDOS, CERTIFICADOS E AMBIENTE LOCAL
+# =============================================================================
+.env
+.env.*
+!.env.example
+appsettings*.local.json
+appsettings.Development.json
+docker-compose.override.yml
+*.pfx
+*.key
+*.pem
+*.crt
+certs/
+
+# =============================================================================
+# SISTEMA OPERACIONAL
+# =============================================================================
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+.DS_Store?
+._*

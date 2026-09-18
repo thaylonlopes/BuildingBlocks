@@ -1,4 +1,4 @@
-# 💎 TL.BuildingBlocks
+# TL.BuildingBlocks
 
 > Fundação e espinha dorsal modular em .NET para acelerar a construção de microsserviços, Web APIs e Worker Services com Result Pattern, Health Checks padronizados e contratos de arquitetura.
 
@@ -10,36 +10,38 @@
 
 ---
 
-## 📑 Sumário
+## Sumário
 
-- [🌟 O que é o TL.BuildingBlocks?](#-o-que-é-o-tlbuildingblocks)
-- [📦 Pacotes NuGet](#-pacotes-nuget)
-- [🚀 Guia de Início Rápido](#-guia-de-início-rápido)
+- [Visão Geral](#visão-geral)
+- [Pacotes NuGet](#pacotes-nuget)
+- [Guia de Início Rápido](#guia-de-início-rápido)
   - [1. Mensageria Agnóstica (Ports & Adapters)](#1-mensageria-agnóstica-ports--adapters)
   - [2. Paginação Padronizada e Result Pattern](#2-paginação-padronizada-e-result-pattern)
   - [3. Health Checks Padronizados em 1 Linha](#3-health-checks-padronizados-em-1-linha)
   - [4. Middlewares HTTP & Erros RFC 7807](#4-middlewares-http--erros-rfc-7807)
-  - [5. Showcase & API Executável](#5-showcase--api-executável)
-- [🧪 Executando os Testes](#-executando-os-testes)
-- [🏛️ Catálogo de Decisões Arquiteturais (ADRs)](#️-catálogo-de-decisões-arquiteturais-adrs)
+  - [5. Resiliência com Polly v8](#5-resiliência-com-polly-v8)
+  - [6. Showcase & API Executável](#6-showcase--api-executável)
+- [Executando os Testes](#executando-os-testes)
+- [Catálogo de Decisões Arquiteturais (ADRs)](#catálogo-de-decisões-arquiteturais-adrs)
+- [Licença](#licença)
 
 ---
 
-## 🌟 O que é o TL.BuildingBlocks?
+## Visão Geral
 
 O **TL.BuildingBlocks** é a fundação corporativa de blocos fundamentais de infraestrutura, comunicação e resiliência projetada para eliminar código boilerplate repetitivo em microsserviços .NET:
 
-1. **💎 Result Pattern, Paginação & Contratos ([`TL.BaseContracts`](TL.BaseContracts/README.md))**: `Result<T>` funcional com `ErrorType`, `PagedResult<T>` imutável com cálculo automático de páginas, `ValidationError` por campo e portas agnósticas de mensageria (`IEventProducer`, `IEventHandler<T>`, `EventMessage<T>`). **Zero dependências externas**.
-2. **🩺 Health Checks Padronizados ([`TL.HealthCheck`](TL.HealthCheck/README.md))**: Probes de *Liveness* (`/liveness`), *Readiness* (`/ready`) e dashboard com UI Client (`/health`) em uma única linha, para Web APIs e Worker Services em segundo plano.
-3. **🛡️ Middlewares HTTP & RFC 7807 ([`TL.MiddlewareLibrary`](TL.MiddlewareLibrary/README.md))**: Suíte modular de middlewares para ASP.NET Core com medição de latência zero-allocation (`X-Response-Time-Ms`), controle de taxa por IP, cache em memória seguro e respostas de erro estruturadas em `ProblemDetails` integradas a `TL.BaseContracts`.
-4. **⚡ Resiliência & Tolerância a Falhas ([`TL.Resilience`](TL.Resilience/README.md))**: Utilitários corporativos baseados em Polly v8 para backoff exponencial com jitter decorrelacionado (`ResilienceHelper`) e resiliência padronizada em HttpClient (`AddStandardResilience` com retry 5xx/408, circuit breaker e timeout).
-5. **🐰 Adaptador RabbitMQ ([`TL.RabbitMQ`](https://github.com/thaylonlopes/TL.Messaging))**: Implementação de `IEventProducer` e `IRabbitMqProducer` com Publisher Confirms, Dead-Letter Queue (`.dlq`) automática e retentativas com Polly (migrado para repositório [`TL.Messaging`](https://github.com/thaylonlopes/TL.Messaging)).
-6. **🦅 Adaptador Apache Kafka ([`TL.Kafka`](https://github.com/thaylonlopes/TL.Messaging))**: Implementação de `IEventProducer` e `IKafkaProducer` com Partition Keys, Dead Letter Topic (`.dlt`), idempotência e headers de telemetria (migrado para repositório [`TL.Messaging`](https://github.com/thaylonlopes/TL.Messaging)).
-7. **🔍 Invocação Segura de Membros Privados ([`TL.InvokePrivate`](TL.InvokePrivate/README.md))**: Utilitário baseado em Reflection para testes e código legado com desembrulho de `TargetInvocationException` (aposentado, sem empacotamento).
+1. **Result Pattern, Paginação & Contratos ([`TL.BaseContracts`](TL.BaseContracts/README.md))**: `Result<T>` funcional com `ErrorType`, `PagedResult<T>` imutável com cálculo automático de páginas, `ValidationError` por campo e portas agnósticas de mensageria (`IEventProducer`, `IEventHandler<T>`, `EventMessage<T>`). Zero dependências externas.
+2. **Health Checks Padronizados ([`TL.HealthCheck`](TL.HealthCheck/README.md))**: Probes de *Liveness* (`/liveness`), *Readiness* (`/ready`) e dashboard com UI Client (`/health`) em uma única linha, para Web APIs e Worker Services em segundo plano.
+3. **Middlewares HTTP & RFC 7807 ([`TL.MiddlewareLibrary`](TL.MiddlewareLibrary/README.md))**: Suíte modular de middlewares para ASP.NET Core com medição de latência zero-allocation (`X-Response-Time-Ms`), controle de taxa por IP, cache em memória seguro e respostas de erro estruturadas em `ProblemDetails` integradas a `TL.BaseContracts`.
+4. **Resiliência & Tolerância a Falhas ([`TL.Resilience`](TL.Resilience/README.md))**: Utilitários corporativos baseados em Polly v8 para backoff exponencial com jitter decorrelacionado (`ResilienceHelper`) e resiliência padronizada em HttpClient (`AddStandardResilience` com retry 5xx/408, circuit breaker e timeout).
+5. **Adaptador RabbitMQ ([`TL.RabbitMQ`](https://github.com/thaylonlopes/TL.Messaging))**: Implementação de `IEventProducer` e `IRabbitMqProducer` com Publisher Confirms, Dead-Letter Queue (`.dlq`) automática e retentativas com Polly (migrado para o repositório [`TL.Messaging`](https://github.com/thaylonlopes/TL.Messaging)).
+6. **Adaptador Apache Kafka ([`TL.Kafka`](https://github.com/thaylonlopes/TL.Messaging))**: Implementação de `IEventProducer` e `IKafkaProducer` com Partition Keys, Dead Letter Topic (`.dlt`), idempotência e headers de telemetria (migrado para o repositório [`TL.Messaging`](https://github.com/thaylonlopes/TL.Messaging)).
+7. **Invocação Segura de Membros Privados ([`TL.InvokePrivate`](TL.InvokePrivate/README.md))**: Utilitário baseado em Reflection para testes e código legado com desembrulho de `TargetInvocationException` (aposentado, sem empacotamento).
 
 ---
 
-## 📦 Pacotes NuGet
+## Pacotes NuGet
 
 | Pacote NuGet | Versão | Runtimes Suportados | Descrição & Documentação |
 | :--- | :---: | :--- | :--- |
@@ -63,7 +65,7 @@ Troque de broker de mensageria alterando apenas a injeção de dependência no `
 // Opção A: Usando RabbitMQ
 builder.Services.AddRabbitMqMessaging(builder.Configuration);
 
-// Opção B: Usando Apache Kafka (Sem alterar nenhum handler ou producer!)
+// Opção B: Usando Apache Kafka (sem alterar nenhum handler ou producer)
 // builder.Services.AddKafkaMessaging(builder.Configuration);
 ```
 
@@ -120,7 +122,28 @@ app.Run();
 
 ---
 
-### 4. Resiliência com Polly v8 (TL.Resilience)
+### 4. Middlewares HTTP & Erros RFC 7807
+
+```csharp
+using TL.MiddlewareLibrary.Extensions;
+
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddMemoryCache();
+
+var app = builder.Build();
+
+app.UseRequestTiming();
+app.UseRateLimiting(100, TimeSpan.FromMinutes(1));
+app.UseCachingMiddleware(TimeSpan.FromMinutes(2));
+app.UseExceptionHandling();
+app.UseStatusCodeMiddleware();
+
+app.Run();
+```
+
+---
+
+### 5. Resiliência com Polly v8
 
 Proteja chamadas HTTP externas com retentativa exponencial, jitter, circuit breaker e timeout em 1 linha:
 
@@ -146,7 +169,7 @@ var dados = await ResilienceHelper.ExecuteWithRetryAsync(
 
 ---
 
-### 5. Showcase & API Executável
+### 6. Showcase & API Executável
 
 Criamos um projeto completo e executável em [`examples/BuildingBlocks.Showcase.Api`](examples/BuildingBlocks.Showcase.Api) com **Swagger UI** demonstrando na prática o uso integrado dos pacotes.
 
@@ -155,11 +178,12 @@ Para executar localmente:
 ```powershell
 dotnet run --project examples/BuildingBlocks.Showcase.Api
 ```
+
 Acesse o Swagger interativo em: **`http://localhost:5000`**.
 
 ---
 
-## 🧪 Executando os Testes
+## Executando os Testes
 
 Para rodar todos os **159 testes automatizados** (unitários e integração) da solução `BuildingBlocks.sln`:
 
@@ -169,7 +193,7 @@ dotnet test BuildingBlocks.sln
 
 ---
 
-## 🏛️ Catálogo de Decisões Arquiteturais (ADRs)
+## Catálogo de Decisões Arquiteturais (ADRs)
 
 - [**`ADR-000: Arquitetura e Convenções da Suíte TL.BuildingBlocks`**](docs/adr/ADR-000-arquitetura-e-convencoes.md)
 - [**`ADR-001: Decisões Arquiteturais do Pacote TL.BaseContracts`**](docs/adr/ADR-001-tl-basecontracts.md)
@@ -180,3 +204,8 @@ dotnet test BuildingBlocks.sln
 - [**`ADR-006: Pipeline HTTP, Resiliência e Padronização de Erros RFC 7807 (TL.MiddlewareLibrary)`**](docs/adr/ADR-006-tl-middlewarelibrary.md)
 - [**`ADR-007: Resiliência Padronizada com Polly v8 (TL.Resilience)`**](docs/adr/ADR-007-tl-resilience.md)
 
+---
+
+## Licença
+
+Este projeto é distribuído sob a licença [MIT](LICENSE).
