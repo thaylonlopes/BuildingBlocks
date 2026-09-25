@@ -36,12 +36,19 @@ Configurar esses endpoints manualmente em cada microsserviço ou Worker Service 
   permitindo que o Kubernetes monitore a saúde do Worker através das portas HTTP expostas.
 
 
-##  3. Consequências e Trade-offs
+### 2.4. Sondas Leves Nativas (/livez e /readyz)
+- Na versão `v0.4.0`, introduzimos o `LightweightHealthCheckResponseWriter` utilizando `Utf8JsonWriter` nativo do `System.Text.Json` puro.
+- Eliminação total da dependência de pacotes de UI de terceiros (`AspNetCore.HealthChecks.UI.Client`).
+- Mapeamento direto de `/livez` (liveness) e `/readyz` (readiness filtrado pela tag `ready`) com zero alocações intermediárias de string e compatibilidade estrita com AOT/Trimming.
 
-###  Vantagens:
+## 3. Consequências e Trade-offs
+
+### ✅ Vantagens:
 - Padronização 100% uniforme de rotas e formatos JSON de Health Check em todos os serviços corporativos.
 - Integração transparente e sem fricção com orquestradores de nuvem e ferramentas como Prometheus / Datadog.
+- Zero sobrecarga de memória em pods Kubernetes de alto volume.
 
-##  4. Status de Verificação
-- Coberto por **17 testes unitários** no `TL.HealthCheck.Tests` (100% passing).
+## 4. Status de Verificação
+- Coberto por **20 testes unitários** no `TL.HealthCheck.Tests` (100% passing).
+
 

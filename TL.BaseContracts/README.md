@@ -253,7 +253,42 @@ var result = SeekResult<PedidoDto, long>.Create(
 
 ---
 
+### 11. Abstrações de Contexto e Multi-Tenancy (`ICurrentUser` e `ICurrentTenant`)
+
+Permita que as camadas de Domínio e Aplicação acessem os dados de identidade do usuário autenticado e do locatário (tenant) sem se acoplarem ao `HttpContext` ou a bibliotecas de infraestrutura:
+
+```csharp
+using TL.BaseContracts.Context;
+
+public class CriarPedidoCommandHandler
+{
+    private readonly ICurrentUser _currentUser;
+    private readonly ICurrentTenant _currentTenant;
+
+    public CriarPedidoCommandHandler(ICurrentUser currentUser, ICurrentTenant currentTenant)
+    {
+        _currentUser = currentUser;
+        _currentTenant = currentTenant;
+    }
+
+    public async Task<Result<Guid>> HandleAsync(CriarPedidoCommand command, CancellationToken ct)
+    {
+        if (!_currentUser.IsAuthenticated)
+            return Result.Failure<Guid>(Error.Unauthorized("Auth.Required", "Usuário não autenticado."));
+
+        var tenantId = _currentTenant.TenantId;
+        var usuarioId = _currentUser.Id;
+
+        // Processar criação do pedido no contexto do tenant
+        return Result.Success(Guid.NewGuid());
+    }
+}
+```
+
+---
+
 ## 🛡️ Compatibilidade & Princípios
 - **.NET Standard 2.0**, **.NET 8.0** (LTS) e **.NET 9.0**
 - **Zero Dependências Externas** (100% BCL Pura).
 - **Invariantes Protegidas**: `IsSuccess` é estritamente falso quando existem mensagens de erro.
+

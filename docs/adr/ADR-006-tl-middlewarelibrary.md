@@ -1,4 +1,4 @@
-﻿# ADR 006: Pipeline HTTP, Resiliência e Padronização de Erros RFC 7807 (TL.MiddlewareLibrary)
+# ADR 006: Pipeline HTTP, Resiliência e Padronização de Erros RFC 7807 (TL.MiddlewareLibrary)
 
 ## 🎯 Contexto e Desafio Prático
 
@@ -70,3 +70,20 @@ graph TD
   - `code`: Código padronizado de erro proveniente de `Error.Code` (ex: `Validation.General`, `User.NotFound`).
   - `errors`: Dicionário tipado de falhas campo a campo herdado de `ValidationError.Errors`.
 - O `StatusCodeMiddleware` e o `ExceptionHandlingMiddleware` garantem que o cabeçalho `Content-Type: application/problem+json` seja sempre emitido.
+
+---
+
+### 5. Bridge ToHttpResult para Minimal APIs (`ResultHttpExtensions`)
+- Na versão `v0.4.0`, introduzimos `result.ToHttpResult()` para eliminar condicionais manuais em endpoints de Minimal APIs.
+- Converte `Result<T>` ou `Result` diretamente para `IResult` do ASP.NET Core:
+  - Casos de sucesso retornam `200 OK` (ou status customizado via delegate).
+  - Casos de falha mapeiam automaticamente `ErrorType` para o status HTTP correspondente em conformidade com RFC 7807 (`Validation` -> 400, `Unauthorized` -> 401, `Forbidden` -> 403, `NotFound` -> 404, `Conflict` -> 409, `Failure` -> 500).
+  - Instâncias de `ValidationError` são serializadas como `ValidationProblemDetails` preenchendo o dicionário de erros por propriedade.
+
+---
+
+### 6. Implementações de Contexto via HttpContext (`HttpContextCurrentUser` e `HttpContextCurrentTenant`)
+- Implementações concretas de `ICurrentUser` e `ICurrentTenant` baseadas em `IHttpContextAccessor`.
+- `AddCurrentUser()`: Extrai `ClaimsPrincipal` do usuário autenticado (ID, Name, Email, Roles, Claims).
+- `AddCurrentTenant()`: Resolve o tenant através de cabeçalho configurável (ex: `X-Tenant-Id`), com fallback para claim `tenant_id`.
+

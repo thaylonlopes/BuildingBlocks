@@ -52,13 +52,18 @@ Na versão `0.2.0`, o pacote passou por um rebranding oficial de `TL.RequestResp
   - `SeekRequest<TKey>` e `SeekRequest`: Normalização segura de limites (`PageSize` de 1 a 100) e identificador de correlação.
   - `SeekResult<T, TCursor>` e `SeekResult<T>`: Resultados imutáveis com indicador `HasNextPage` e cursor de continuidade para consultas de latência constante sem sobrecarga de offset.
 
+### 2.7. Abstrações de Identidade e Multi-Tenancy (`TL.BaseContracts.Context`)
+- `ICurrentUser`: Contrato em BCL pura fornecendo identificação do usuário autenticado (`Id`, `Username`, `Email`, `IsAuthenticated`, `Roles`, `Claims`), permitindo que a camada de aplicação audite entidades e valide permissões sem depender do ASP.NET Core.
+- `ICurrentTenant`: Contrato de locatário multi-inquilino (`TenantId`, `HasTenant`) com implementação condicional em C# para manter compatibilidade estrita com `netstandard2.0`.
+
 ## ⚖️ 3. Consequências e Trade-offs
 
 ### ✅ Vantagens:
 - **Zero Dependências**: Pode ser instalado em qualquer biblioteca de domínio ou aplicação sem poluir dependências (100% BCL pura).
 - **Previsibilidade**: Elimina bugs de "falha silenciosa" e engolimento de exceções.
-- **Produtividade**: Paginação, validação, DDD e CQRS padronizados em uma única fundação estável.
+- **Produtividade**: Paginação, validação, DDD, CQRS e contexto de identidade padronizados em uma única fundação estável.
 
 ## 🧪 4. Status de Verificação
-- Coberto por **70 testes unitários** no `TL.BaseContracts.Tests` (100% passing em `netstandard2.0`, `net8.0` e `net9.0`).
+- Coberto por **78 testes unitários** no `TL.BaseContracts.Tests` (100% passing em `netstandard2.0`, `net8.0` e `net9.0`).
+
 

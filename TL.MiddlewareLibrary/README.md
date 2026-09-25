@@ -1,4 +1,4 @@
-﻿# 🚀 TL.MiddlewareLibrary
+# 🚀 TL.MiddlewareLibrary
 
 [![.NET](https://img.shields.io/badge/.NET-net8.0%20%7C%20net9.0-blue.svg)](https://dotnet.microsoft.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -63,6 +63,45 @@ app.Run();
 
 ---
 
+## 🎯 Ergonomia Minimal APIs (`ToHttpResult()`)
+
+Elimine o código defensivo repetitivo de pattern matching nas Minimal APIs com a bridge `ToHttpResult()`:
+
+```csharp
+using TL.BaseContracts.Http;
+
+app.MapGet("/api/pedidos/{id:guid}", (Guid id, PedidoService service) =>
+{
+    return service.ObterPorId(id).ToHttpResult();
+});
+
+app.MapPost("/api/pedidos", async (NovoPedidoRequest request, PedidoService service) =>
+{
+    var result = await service.CriarPedidoAsync(request);
+    return result.ToHttpResult(pedido => Results.Created($"/api/pedidos/{pedido.Id}", pedido));
+});
+```
+
+Erros são mapeados automaticamente para RFC 7807 (`ProblemDetails` e `ValidationProblemDetails`).
+
+---
+
+## 👤 Injeção de Identidade e Tenant (`ICurrentUser` e `ICurrentTenant`)
+
+Registre as implementações integradas ao `IHttpContextAccessor`:
+
+```csharp
+using TL.MiddlewareLibrary.Context;
+
+builder.Services.AddCurrentUser();
+builder.Services.AddCurrentTenant(headerName: "X-Tenant-Id");
+```
+
+Permite injetar `ICurrentUser` e `ICurrentTenant` diretamente nos serviços de aplicação.
+
+---
+
 ## 📄 Licença
 
 Distribuído sob a licença [MIT](https://opensource.org/licenses/MIT).
+

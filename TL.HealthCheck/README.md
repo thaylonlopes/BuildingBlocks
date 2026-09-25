@@ -75,26 +75,32 @@ IHost host = Host.CreateDefaultBuilder(args)
 await host.RunAsync();
 ```
 
-### 4. Customização de Rotas via `appsettings.json`
+### 5. Sondas Leves Nativas (/livez e /readyz)
 
-Você pode sobrescrever as rotas padrão diretamente no arquivo de configuração:
+Para cenários de alta performance ou orquestração Kubernetes de baixa sobrecarga de memória, utilize as sondas leves nativas serializadas com `Utf8JsonWriter` (zero dependências de pacotes de UI de terceiros e 100% livre de warnings AOT/trimming):
 
-```json
-{
-  "HealthCheckConfig": {
-    "Timeout": 30,
-    "Patterns": {
-      "Health": "/custom-health",
-      "Liveness": "/custom-liveness",
-      "Readiness": "/custom-ready"
-    }
-  }
-}
+```csharp
+using TL.HealthCheck;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Registra health checks leves nativos
+builder.Services.AddLightweightHealthChecks();
+
+var app = builder.Build();
+
+// Mapeia automaticamente /livez e /readyz
+app.MapLightweightHealthChecks();
+
+app.Run();
 ```
 
 ---
 
 ## 🏛️ Endpoints Padrão Expostos
+- **`/livez`**: Sonda de vivacidade leve para Kubernetes (zero dependências externas, resposta `application/json` nativa).
+- **`/readyz`**: Sonda de prontidão leve avaliando dependências marcadas com a tag `ready`.
 - **`/health`**: Resposta detalhada formatada para consumo pelo UI Client.
-- **`/liveness`**: Sonda de vivacidade para orquestradores (Kubernetes / Docker).
-- **`/ready`**: Sonda de prontidão para recebimento de tráfego.
+- **`/liveness`**: Sonda legada de vivacidade.
+- **`/ready`**: Sonda legada de prontidão.
+
