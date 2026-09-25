@@ -2,9 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using TL.HealthCheck.Config;
-using TL.HealthCheck.Constants;
-using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -13,6 +10,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
+using TL.HealthCheck.Config;
+using TL.HealthCheck.Constants;
+using TL.HealthCheck.Lightweight;
 
 [assembly: InternalsVisibleTo("TL.HealthCheck.Tests")]
 
@@ -22,15 +22,14 @@ namespace TL.HealthCheck
     /// Extensões fluentes para configuração simplificada de Health Checks em ASP.NET Core e Worker Services.
     /// </summary>
     /// <remarks>
-    /// Padroniza probes de orquestração (<c>/liveness</c> e <c>/ready</c>) e dashboard com UI (<c>/health</c>)
-    /// de acordo com as melhores práticas corporativas para Kubernetes e monitoramento.
+    /// Padroniza probes de orquestração (<c>/livez</c>, <c>/readyz</c> e legados) utilizando serialização nativa ultrarrápida com System.Text.Json.
     /// </remarks>
     public static class HealthCheckExtensions
     {
         private static readonly HealthCheckOptions _options = new HealthCheckOptions
         {
             Predicate = _ => true,
-            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            ResponseWriter = LightweightHealthCheckResponseWriter.WriteResponseAsync
         };
 
         private static readonly HealthCheckOptions _optionsResponse = new HealthCheckOptions
@@ -39,16 +38,22 @@ namespace TL.HealthCheck
         };
 
         /// <summary>
+        /// Registra os Health Checks padrão no container de injeção de dependência com serializador leve System.Text.Json.
+        /// </summary>
+        /// <param name="services">A coleção de serviços da aplicação.</param>
+        /// <param name="check">Função opcional para fornecer verificações personalizadas adicionais.</param>
+        /// <returns>A coleção de serviços para encadeamento fluente.</returns>
+        public static IServiceCollection AddLightweightHealthChecks(this IServiceCollection services, Func<CheckConfig[]>? check = default)
+        {
+            return services.AddRequiredHealthChecks(check);
+        }
+
+        /// <summary>
         /// Registra os Health Checks padrão no container de injeção de dependência.
         /// </summary>
         /// <param name="services">A coleção de serviços da aplicação.</param>
         /// <param name="check">Função opcional para fornecer verificações personalizadas adicionais.</param>
         /// <returns>A coleção de serviços para encadeamento fluente.</returns>
-        /// <example>
-        /// <code>
-        /// builder.Services.AddRequiredHealthChecks();
-        /// </code>
-        /// </example>
         public static IServiceCollection AddRequiredHealthChecks(this IServiceCollection services, Func<CheckConfig[]>? check = default)
         {
             var builder = services.AddHealthChecks();
@@ -104,6 +109,30 @@ namespace TL.HealthCheck
                     });
                 });
             });
+        }
+
+        /// <summary>
+        /// Mapeia os endpoints padronizados de probes Kubernetes (<c>/livez</c> e <c>/readyz</c>) com serialização JSON nativa.
+        /// </summary>
+        /// <param name="endpointRouteBuilder">O roteador de endpoints ASP.NET Core.</param>
+        /// <returns>O roteador para encadeamento fluente.</returns>
+        public static IEndpointRouteBuilder MapLightweightHealthChecks(this IEndpointRouteBuilder endpointRouteBuilder)
+        {
+            endpointRouteBuilder.MapHealthChecks("/livez", new HealthCheckOptions
+            {
+                Predicate = registration => registration.Tags.Contains("live") || registration.Tags.Contains("liveness"),
+                ResponseWriter = LightweightHealthCheckResponseWriter.WriteResponseAsync
+            });
+
+            endpointRouteBuilder.MapHealthChecks("/readyz", new HealthCheckOptions
+            {
+                Predicate = registration => registration.Tags.Contains("ready") || registration.Tags.Contains("readiness"),
+                ResponseWriter = LightweightHealthCheckResponseWriter.WriteResponseAsync
+            });
+
+            endpointRouteBuilder.MapHealthChecks("/healthz", _options);
+
+            return endpointRouteBuilder;
         }
 
         /// <summary>

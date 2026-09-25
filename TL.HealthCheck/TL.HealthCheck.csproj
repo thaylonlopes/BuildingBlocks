@@ -3,14 +3,12 @@
   <PropertyGroup>
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <PackageId>TL.HealthCheck</PackageId>
-    <Description>Configuração simplificada e padronizada de Health Checks (Liveness, Readiness, UI Client) para ASP.NET Core e Worker Services em .NET 8 e .NET 9.</Description>
+    <Description>Configuração simplificada, ultrarrápida e padronizada de Health Checks (Liveness, Readiness, Probes nativos) com System.Text.Json para ASP.NET Core e Worker Services em .NET 8 e .NET 9.</Description>
     <PackageTags>healthchecks;liveness;readiness;aspnetcore;workerservice;monitoring;kubernetes;diagnostics;tl</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" />
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
 </Project>
