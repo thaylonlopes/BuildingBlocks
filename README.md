@@ -31,7 +31,7 @@
 
 O **TL.BuildingBlocks** é a fundação corporativa de blocos fundamentais de infraestrutura, comunicação e resiliência projetada para eliminar código boilerplate repetitivo em microsserviços .NET:
 
-1. **Result Pattern, Paginação & Contratos ([`TL.BaseContracts`](TL.BaseContracts/README.md))**: `Result<T>` funcional com `ErrorType`, `PagedResult<T>` imutável com cálculo automático de páginas, `ValidationError` por campo e portas agnósticas de mensageria (`IEventProducer`, `IEventHandler<T>`, `EventMessage<T>`). Zero dependências externas.
+1. **Result Pattern, DDD, CQRS & Paginação ([`TL.BaseContracts`](TL.BaseContracts/README.md))**: `Result<T>` funcional com `ErrorType`, primitivos de domínio (`Entity`, `AggregateRoot`, `ValueObject`), semântica CQRS (`ICommand`, `IQuery`), paginação offset e keyset $O(1)$ (`SeekRequest`, `SeekResult`), e portas agnósticas de mensageria. Zero dependências externas.
 2. **Health Checks Padronizados ([`TL.HealthCheck`](TL.HealthCheck/README.md))**: Probes de *Liveness* (`/liveness`), *Readiness* (`/ready`) e dashboard com UI Client (`/health`) em uma única linha, para Web APIs e Worker Services em segundo plano.
 3. **Middlewares HTTP & RFC 7807 ([`TL.MiddlewareLibrary`](TL.MiddlewareLibrary/README.md))**: Suíte modular de middlewares para ASP.NET Core com medição de latência zero-allocation (`X-Response-Time-Ms`), controle de taxa por IP, cache em memória seguro e respostas de erro estruturadas em `ProblemDetails` integradas a `TL.BaseContracts`.
 4. **Resiliência & Tolerância a Falhas ([`TL.Resilience`](TL.Resilience/README.md))**: Utilitários corporativos baseados em Polly v8 para backoff exponencial com jitter decorrelacionado (`ResilienceHelper`) e resiliência padronizada em HttpClient (`AddStandardResilience` com retry 5xx/408, circuit breaker e timeout).
@@ -45,7 +45,7 @@ O **TL.BuildingBlocks** é a fundação corporativa de blocos fundamentais de in
 
 | Pacote NuGet | Versão | Runtimes Suportados | Descrição & Documentação |
 | :--- | :---: | :--- | :--- |
-| [**`TL.BaseContracts`**](TL.BaseContracts/README.md) | `0.3.0` | `netstandard2.0; net8.0; net9.0` | Fundação padronizada de contratos em BCL pura (Commands, Queries, Events, Results, Errors e Paginações). |
+| [**`TL.BaseContracts`**](TL.BaseContracts/README.md) | `0.4.0` | `netstandard2.0; net8.0; net9.0` | Fundação padronizada de contratos em BCL pura (Commands, Queries, Events, Results, Errors, DDD e Paginações). |
 | [**`TL.HealthCheck`**](TL.HealthCheck/README.md) | `0.3.0` | `net8.0; net9.0` | Probes de Liveness, Readiness, UI Client e Web Host para Workers. |
 | [**`TL.MiddlewareLibrary`**](TL.MiddlewareLibrary/README.md) | `0.3.0` | `net8.0; net9.0` | Suíte modular de middlewares HTTP (latência, rate limiting, cache, RFC 7807 ProblemDetails). |
 | [**`TL.Resilience`**](TL.Resilience/README.md) | `0.3.0` | `net8.0; net9.0` | Resiliência corporativa com Polly v8 (Backoff exponencial, Jitter, Circuit Breaker, Timeout e HttpClient). |

@@ -19,3 +19,4 @@ namespace TL.BaseContracts.CQRS
         Task<TResult> HandleAsync(TQuery query, CancellationToken cancellationToken = default);
     }
 }
+

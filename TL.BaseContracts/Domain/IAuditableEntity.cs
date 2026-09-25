@@ -28,3 +28,4 @@ namespace TL.BaseContracts.Domain
         string? UpdatedBy { get; }
     }
 }
+

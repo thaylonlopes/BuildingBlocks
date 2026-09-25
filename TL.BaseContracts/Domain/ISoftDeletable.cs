@@ -18,3 +18,4 @@ namespace TL.BaseContracts.Domain
         DateTime? DeletedAtUtc { get; }
     }
 }
+

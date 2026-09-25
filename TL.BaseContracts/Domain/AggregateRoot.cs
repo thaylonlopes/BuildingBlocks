@@ -52,3 +52,4 @@ namespace TL.BaseContracts.Domain
         }
     }
 }
+

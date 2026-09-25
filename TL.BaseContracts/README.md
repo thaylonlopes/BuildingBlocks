@@ -169,7 +169,91 @@ Result<UserDto> modernResult = legacyResponse.ToResult();
 
 ---
 
-##  Compatibilidade & Princípios
+### 8. Primitivos de Domain-Driven Design (`TL.BaseContracts.Domain`)
+
+Construa entidades ricas, raízes de agregação e objetos de valor com igualdade estrutural em BCL pura:
+
+```csharp
+using TL.BaseContracts.Domain;
+
+// Objeto de Valor com igualdade estrutural automática
+public class Endereco : ValueObject
+{
+    public string Logradouro { get; }
+    public string Cidade { get; }
+
+    public Endereco(string logradouro, string cidade)
+    {
+        Logradouro = logradouro;
+        Cidade = cidade;
+    }
+
+    protected override IEnumerable<object?> GetEqualityComponents()
+    {
+        yield return Logradouro;
+        yield return Cidade;
+    }
+}
+
+// Raiz de Agregação com eventos de domínio encapsulados
+public class Pedido : AggregateRoot<Guid>
+{
+    public Pedido(Guid id) : base(id)
+    {
+        AddDomainEvent(new PedidoCriadoEvent(id));
+    }
+}
+```
+
+---
+
+### 9. Semântica CQRS Desacoplada (`TL.BaseContracts.CQRS`)
+
+Separe comandos e consultas sem acoplamento a bibliotecas pesadas de mediação:
+
+```csharp
+using TL.BaseContracts;
+using TL.BaseContracts.CQRS;
+
+public class CriarClienteCommand : ICommand<Result<Guid>>
+{
+    public Guid IdRequest { get; } = Guid.NewGuid();
+    public string Nome { get; set; } = string.Empty;
+}
+
+public class CriarClienteCommandHandler : ICommandHandler<CriarClienteCommand, Result<Guid>>
+{
+    public async Task<Result<Guid>> HandleAsync(CriarClienteCommand command, CancellationToken ct)
+    {
+        var id = Guid.NewGuid();
+        return Result.Success(id);
+    }
+}
+```
+
+---
+
+### 10. Paginação Keyset / Seek Method $O(1)$ (`SeekRequest` e `SeekResult<T>`)
+
+Realize navegação contínua por cursor com latência constante independente do volume da tabela:
+
+```csharp
+using TL.BaseContracts;
+
+// Requisição com cursor e tamanho de lote
+var request = new SeekRequest<long>(lastSeenId: 1050, pageSize: 25);
+
+// Retorno imutável com token da próxima página
+var result = SeekResult<PedidoDto, long>.Create(
+    items: pedidos,
+    pageSize: 25,
+    hasNextPage: true,
+    nextCursor: 1075);
+```
+
+---
+
+## 🛡️ Compatibilidade & Princípios
 - **.NET Standard 2.0**, **.NET 8.0** (LTS) e **.NET 9.0**
 - **Zero Dependências Externas** (100% BCL Pura).
 - **Invariantes Protegidas**: `IsSuccess` é estritamente falso quando existem mensagens de erro.

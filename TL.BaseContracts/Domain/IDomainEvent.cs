@@ -13,3 +13,4 @@ namespace TL.BaseContracts.Domain
         DateTime OccurredOnUtc { get; }
     }
 }
+

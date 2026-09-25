@@ -37,13 +37,28 @@ Na versão `0.2.0`, o pacote passou por um rebranding oficial de `TL.RequestResp
 - `IRequest`: Interface com `Guid IdRequest` para rastreamento de ponta a ponta.
 - `Response<T>`: Envelope tradicional mantido com métodos de ponte `ToResult()` e `ToResponse()`.
 
+### 2.6. Primitivos de Domínio (DDD), Contratos CQRS Desacoplados e Keyset Pagination
+- **Primitivos DDD (`TL.BaseContracts.Domain`)**:
+  - `Entity<TId>`: Base para entidades com igualdade estrita baseada em identidade (`Id`), sobrecarga de operadores (`==`, `!=`) e diferenciação de tipos derivados.
+  - `AggregateRoot<TId>`: Raiz de agregação com coleção encapsulada e imutável de eventos de domínio (`DomainEvents`), métodos protegidos de registro (`AddDomainEvent`) e expurgo (`ClearDomainEvents`).
+  - `ValueObject`: Objeto de valor com igualdade estrutural via `GetEqualityComponents()` e cálculo determinístico de `GetHashCode()` em BCL pura compatível com `netstandard2.0`.
+  - Interfaces canônicas: `IDomainEvent` (timestamp UTC), `IAuditableEntity` (autoria e timestamps de criação/modificação) e `ISoftDeletable` (exclusão lógica).
+- **Semântica CQRS em BCL Pura (`TL.BaseContracts.CQRS`)**:
+  - `ICommand<TResult>` e `ICommand` (retornando `Result` por padrão).
+  - `ICommandHandler<TCommand, TResult>` e `ICommandHandler<TCommand>`.
+  - `IQuery<TResult>` e `IQueryHandler<TQuery, TResult>`.
+  - Desacoplamento completo de bibliotecas terceiras de mediação, com suporte a injeção nativa de dependência e compatibilidade com Native AOT.
+- **Keyset / Cursor Pagination $O(1)$ (`TL.BaseContracts`)**:
+  - `SeekRequest<TKey>` e `SeekRequest`: Normalização segura de limites (`PageSize` de 1 a 100) e identificador de correlação.
+  - `SeekResult<T, TCursor>` e `SeekResult<T>`: Resultados imutáveis com indicador `HasNextPage` e cursor de continuidade para consultas de latência constante sem sobrecarga de offset.
+
 ## ⚖️ 3. Consequências e Trade-offs
 
 ### ✅ Vantagens:
 - **Zero Dependências**: Pode ser instalado em qualquer biblioteca de domínio ou aplicação sem poluir dependências (100% BCL pura).
 - **Previsibilidade**: Elimina bugs de "falha silenciosa" e engolimento de exceções.
-- **Produtividade**: Paginação e validação resolvidas em uma linha de código em todas as APIs.
+- **Produtividade**: Paginação, validação, DDD e CQRS padronizados em uma única fundação estável.
 
 ## 🧪 4. Status de Verificação
-- Coberto por **40 testes unitários** no `TL.BaseContracts.Tests` (100% passing).
+- Coberto por **70 testes unitários** no `TL.BaseContracts.Tests` (100% passing em `netstandard2.0`, `net8.0` e `net9.0`).
 
