@@ -7,12 +7,15 @@ using TL.HealthCheck;
 using TL.HealthCheck.Config;
 using TL.BaseContracts;
 using TL.BaseContracts.Messaging;
+using BuildingBlocks.Showcase.Api.Cqrs;
 using BuildingBlocks.Showcase.Api.Events;
 using BuildingBlocks.Showcase.Api.Models;
 using BuildingBlocks.Showcase.Api.Services;
+using TL.BaseContracts.CQRS;
 using TL.MiddlewareLibrary.Exceptions;
 using TL.MiddlewareLibrary.Extensions;
 using TL.MiddlewareLibrary.Models;
+using TL.Resilience;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -44,6 +47,8 @@ builder.Services.AddRequiredHealthChecks(() => new[]
 builder.Services.AddSingleton<IEventProducer, InMemoryEventProducer>();
 builder.Services.AddSingleton<OrderService>();
 builder.Services.AddTransient<OrderCreatedHandler>();
+builder.Services.AddTransient<CreateOrderCommandHandler>();
+builder.Services.AddTransient<GetOrderByIdQueryHandler>();
 
 var app = builder.Build();
 
@@ -121,24 +126,100 @@ ordersGroup.MapPost("/", async (
 .WithName("CreateOrder")
 .WithSummary("Cria um novo pedido com validação rica por campo (ValidationError) e disparo assíncrono via IEventProducer.");
 
-app.MapGet("/api/diagnostics/reflection-demo", () =>
+ordersGroup.MapGet("/keyset", (
+    [FromQuery] Guid? lastSeenId,
+    [FromQuery] int pageSize = 5,
+    [FromServices] OrderService orderService = null!) =>
 {
-    var sampleCalculator = new SampleCalculator();
-    
-    #pragma warning disable CS0618 
-    int calculated = TL.InvokePrivate.MethodInvoker.InvokePrivateMethod<int>(
-        sampleCalculator, "ComputeSecretMultiplier", 7);
-    #pragma warning restore CS0618
+    var seekRequest = new SeekRequest<Guid?>(lastSeenId, pageSize);
+    var seekResult = orderService.GetOrdersKeyset(seekRequest);
+    return Results.Ok(seekResult);
+})
+.WithName("GetOrdersKeyset")
+.WithSummary("Lista pedidos com navegação contínua O(1) baseada em cursor (Keyset) usando SeekRequest<Guid?> e SeekResult<OrderDto, Guid?>.");
+
+var cqrsGroup = app.MapGroup("/api/cqrs/orders").WithTags("CQRS (TL.BaseContracts.CQRS)");
+
+cqrsGroup.MapGet("/{id:guid}", async (
+    [FromRoute] Guid id,
+    [FromServices] GetOrderByIdQueryHandler handler,
+    CancellationToken cancellationToken) =>
+{
+    var query = new GetOrderByIdQuery(id);
+    var result = await handler.HandleAsync(query, cancellationToken);
+
+    return result.Match(
+        order => Results.Ok(order),
+        error => error.Type switch
+        {
+            ErrorType.NotFound => Results.NotFound(new { error.Code, error.Message }),
+            _ => Results.BadRequest(new { error.Code, error.Message })
+        });
+})
+.WithName("CqrsGetOrderById")
+.WithSummary("Executa consulta desacoplada via IQuery e IQueryHandler.");
+
+cqrsGroup.MapPost("/", async (
+    [FromBody] CreateOrderRequest request,
+    [FromServices] CreateOrderCommandHandler handler,
+    CancellationToken cancellationToken) =>
+{
+    var command = new CreateOrderCommand(request.CustomerEmail, request.TotalAmount, request.ItemDescription);
+    var result = await handler.HandleAsync(command, cancellationToken);
+
+    return result.Match(
+        order => Results.Created($"/api/cqrs/orders/{order.Id}", order),
+        error =>
+        {
+            if (error is ValidationError validationError)
+            {
+                var errorsDict = validationError.Errors.ToDictionary(k => k.Key, v => v.Value);
+                return Results.ValidationProblem(
+                    errors: errorsDict,
+                    title: validationError.Message,
+                    detail: validationError.Code);
+            }
+
+            return Results.BadRequest(new { error.Code, error.Message });
+        });
+})
+.WithName("CqrsCreateOrder")
+.WithSummary("Executa comando desacoplado via ICommand e ICommandHandler com validação.");
+
+var resilienceGroup = app.MapGroup("/api/resilience").WithTags("Resiliência (TL.Resilience)");
+
+int retryCounter = 0;
+
+resilienceGroup.MapGet("/retry-demo", async (
+    [FromServices] ILogger<Program> logger,
+    CancellationToken cancellationToken) =>
+{
+    var executionResult = await ResilienceHelper.ExecuteWithRetryAsync(
+        async ct =>
+        {
+            var attempt = Interlocked.Increment(ref retryCounter);
+            if (attempt % 3 != 0)
+            {
+                throw new TimeoutException($"Falha transitória simulada na tentativa #{attempt}.");
+            }
+
+            await Task.Delay(10, ct);
+            return $"Operação completada com sucesso na tentativa #{attempt}!";
+        },
+        maxRetryAttempts: 3,
+        initialDelay: TimeSpan.FromMilliseconds(50),
+        logger: logger,
+        cancellationToken: cancellationToken);
 
     return Results.Ok(new
     {
-        Message = "Demonstração de invocação de método privado via MethodInvoker com desembrulho de exceções.",
-        Input = 7,
-        Result = calculated
+        Status = "Sucesso",
+        Details = executionResult,
+        TotalAttemptsInvoked = retryCounter
     });
 })
-.WithTags("Diagnósticos")
-.WithSummary("Demonstra o uso controlado de Reflection do pacote TL.InvokePrivate.");
+.WithName("ResilienceRetryDemo")
+.WithSummary("Demonstra execução resiliente com Polly v8, backoff exponencial e jitter decorrelacionado.");
 
 var middlewareGroup = app.MapGroup("/api/middlewares").WithTags("Middlewares & RFC 7807 (TL.MiddlewareLibrary)");
 
@@ -215,11 +296,6 @@ public sealed class InMemoryEventProducer : IEventProducer
         _logger.LogInformation("Lote de eventos {EventType} publicado em memória", typeof(T).Name);
         return Task.FromResult(Result.Success());
     }
-}
-
-public class SampleCalculator
-{
-    private int ComputeSecretMultiplier(int value) => value * 42;
 }
 
 public partial class Program { }

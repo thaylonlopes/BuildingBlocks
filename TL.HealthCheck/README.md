@@ -13,13 +13,13 @@
 Adicione o pacote ao seu projeto via .NET CLI:
 
 ```bash
-dotnet add package TL.HealthCheck --version 0.1.0
+dotnet add package TL.HealthCheck --version 0.4.0
 ```
 
 Ou através do Gerenciador de Pacotes do Visual Studio:
 
 ```powershell
-Install-Package TL.HealthCheck -Version 0.1.0
+Install-Package TL.HealthCheck -Version 0.4.0
 ```
 
 ---

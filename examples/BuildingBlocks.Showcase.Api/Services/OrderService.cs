@@ -60,6 +60,32 @@ namespace BuildingBlocks.Showcase.Api.Services
         }
 
         /// <summary>
+        /// Obtém listagem de pedidos com paginação contínua O(1) baseada em cursor (Seek / Keyset Method).
+        /// </summary>
+        public SeekResult<OrderDto, Guid?> GetOrdersKeyset(SeekRequest<Guid?> request)
+        {
+            var orderedList = _database.Values
+                .OrderBy(o => o.Id)
+                .ToList();
+
+            var query = orderedList.AsEnumerable();
+            if (request.LastSeenId.HasValue && request.LastSeenId.Value != Guid.Empty)
+            {
+                query = query.Where(o => o.Id.CompareTo(request.LastSeenId.Value) > 0);
+            }
+
+            var items = query.Take(request.PageSize + 1).ToList();
+            bool hasNextPage = items.Count > request.PageSize;
+            if (hasNextPage)
+            {
+                items.RemoveAt(items.Count - 1);
+            }
+
+            Guid? nextCursor = hasNextPage && items.Count > 0 ? items[items.Count - 1].Id : null;
+            return SeekResult<OrderDto, Guid?>.Create(items, request.PageSize, hasNextPage, nextCursor);
+        }
+
+        /// <summary>
         /// Obtém um pedido específico por ID demonstrando o Result Pattern com <see cref="Result{T}"/>.
         /// </summary>
         public Result<OrderDto> GetOrderById(Guid id)

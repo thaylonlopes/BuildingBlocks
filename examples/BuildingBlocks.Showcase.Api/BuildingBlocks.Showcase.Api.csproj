@@ -10,8 +10,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\TL.BaseContracts\TL.BaseContracts.csproj" />
     <ProjectReference Include="..\..\TL.HealthCheck\TL.HealthCheck.csproj" />
-    <ProjectReference Include="..\..\TL.InvokePrivate\TL.InvokePrivate.csproj" />
     <ProjectReference Include="..\..\TL.MiddlewareLibrary\TL.MiddlewareLibrary.csproj" />
+    <ProjectReference Include="..\..\TL.Resilience\TL.Resilience.csproj" />
   </ItemGroup>
 
   <ItemGroup>

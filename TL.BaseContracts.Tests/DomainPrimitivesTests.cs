@@ -63,6 +63,24 @@ namespace TL.BaseContracts.Tests
             }
         }
 
+        private sealed class TaggedDocumentValueObject : ValueObject
+        {
+            public string Title { get; }
+            public IReadOnlyList<string> Tags { get; }
+
+            public TaggedDocumentValueObject(string title, IReadOnlyList<string> tags)
+            {
+                Title = title;
+                Tags = tags;
+            }
+
+            protected override IEnumerable<object?> GetEqualityComponents()
+            {
+                yield return Title;
+                yield return Tags;
+            }
+        }
+
         private sealed class AuditableUser : IAuditableEntity, ISoftDeletable
         {
             public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
@@ -176,6 +194,41 @@ namespace TL.BaseContracts.Tests
             user.CreatedBy.Should().Be("admin");
             user.IsDeleted.Should().BeTrue();
             user.DeletedAtUtc.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Given_Transient_Entities_Should_Identify_As_Transient_And_Not_Equal_Other_Transients()
+        {
+            var transient1 = new CustomerIdEntity(Guid.Empty);
+            var transient2 = new CustomerIdEntity(Guid.Empty);
+            var persisted = new CustomerIdEntity(Guid.NewGuid());
+
+            transient1.IsTransient().Should().BeTrue();
+            transient2.IsTransient().Should().BeTrue();
+            persisted.IsTransient().Should().BeFalse();
+
+            (transient1 == transient2).Should().BeFalse();
+            transient1.Equals(transient2).Should().BeFalse();
+
+            var sameReference = transient1;
+            (transient1 == sameReference).Should().BeTrue();
+            transient1.Equals(sameReference).Should().BeTrue();
+        }
+
+        [Fact]
+        public void Given_ValueObjects_With_Nested_Collections_Should_Support_Deep_Structural_Equality()
+        {
+            var doc1 = new TaggedDocumentValueObject("Spec", new[] { "architecture", "csharp" });
+            var doc2 = new TaggedDocumentValueObject("Spec", new List<string> { "architecture", "csharp" });
+            var docWithDifferentOrder = new TaggedDocumentValueObject("Spec", new[] { "csharp", "architecture" });
+            var docWithDifferentTags = new TaggedDocumentValueObject("Spec", new[] { "architecture", "fsharp" });
+
+            (doc1 == doc2).Should().BeTrue();
+            doc1.Equals(doc2).Should().BeTrue();
+            doc1.GetHashCode().Should().Be(doc2.GetHashCode());
+
+            (doc1 == docWithDifferentOrder).Should().BeFalse();
+            (doc1 == docWithDifferentTags).Should().BeFalse();
         }
     }
 }

@@ -35,7 +35,7 @@ O **TL.Resilience** padroniza a implementação de políticas defensivas em cham
 Adicione o pacote ao seu projeto via .NET CLI:
 
 ```bash
-dotnet add package TL.Resilience --version 0.3.0
+dotnet add package TL.Resilience --version 0.4.0
 ```
 
 ---

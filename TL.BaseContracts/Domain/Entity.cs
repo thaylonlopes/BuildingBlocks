@@ -30,6 +30,15 @@ namespace TL.BaseContracts.Domain
             Id = id;
         }
 
+        /// <summary>
+        /// Indica se a entidade é transiente (não persistida e com identificador padrão não atribuído).
+        /// </summary>
+        /// <returns>True se a entidade for transiente; caso contrário, false.</returns>
+        public bool IsTransient()
+        {
+            return EqualityComparer<TId>.Default.Equals(Id, default!);
+        }
+
         /// <inheritdoc />
         public override bool Equals(object? obj)
         {
@@ -54,12 +63,22 @@ namespace TL.BaseContracts.Domain
                 return false;
             }
 
+            if (IsTransient() || other.IsTransient())
+            {
+                return false;
+            }
+
             return EqualityComparer<TId>.Default.Equals(Id, other.Id);
         }
 
         /// <inheritdoc />
         public override int GetHashCode()
         {
+            if (IsTransient())
+            {
+                return base.GetHashCode();
+            }
+
             return EqualityComparer<TId>.Default.GetHashCode(Id);
         }
 
