@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using TL.HealthCheck;
 using TL.HealthCheck.Config;
 using TL.BaseContracts;
+using TL.BaseContracts.Http;
+using TL.BaseContracts.Context;
 using TL.BaseContracts.Messaging;
 using BuildingBlocks.Showcase.Api.Cqrs;
 using BuildingBlocks.Showcase.Api.Events;
@@ -37,12 +39,15 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddRequiredHealthChecks(() => new[]
+builder.Services.AddLightweightHealthChecks(() => new[]
 {
     new CheckConfig("database_sql", new[] { "ready" }, () => HealthCheckResult.Healthy("Conexão SQL saudável."), TimeSpan.FromSeconds(2)),
     new CheckConfig("event_bus", new[] { "ready" }, () => HealthCheckResult.Healthy("Event Bus in-memory ativo."), TimeSpan.FromSeconds(1)),
     new CheckConfig("api_liveness", new[] { "live" }, () => HealthCheckResult.Healthy("Processo em execução saudável."), TimeSpan.FromSeconds(1))
 });
+
+builder.Services.AddCurrentUser();
+builder.Services.AddCurrentTenant("X-Tenant-Id");
 
 builder.Services.AddSingleton<IEventProducer, InMemoryEventProducer>();
 builder.Services.AddSingleton<OrderService>();
@@ -68,6 +73,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.MapLightweightHealthChecks();
 app.MapRequiredHealthCheck();
 
 var ordersGroup = app.MapGroup("/api/orders").WithTags("Pedidos (Orders)");
@@ -89,42 +95,20 @@ ordersGroup.MapGet("/{id:guid}", (
     [FromServices] OrderService orderService = null!) =>
 {
     var result = orderService.GetOrderById(id);
-
-    return result.Match(
-        order => Results.Ok(order),
-        error => error.Type switch
-        {
-            ErrorType.NotFound => Results.NotFound(new { error.Code, error.Message }),
-            _ => Results.BadRequest(new { error.Code, error.Message })
-        });
+    return result.ToHttpResult();
 })
 .WithName("GetOrderById")
-.WithSummary("Busca um pedido por ID utilizando Result<OrderDto> e Pattern Matching Match().");
+.WithSummary("Busca um pedido por ID utilizando Result<OrderDto> e conversão ergonômica via ToHttpResult().");
 
 ordersGroup.MapPost("/", async (
     [FromBody] CreateOrderRequest request,
     [FromServices] OrderService orderService = null!) =>
 {
     var result = await orderService.CreateOrderAsync(request);
-
-    return result.Match(
-        order => Results.Created($"/api/orders/{order.Id}", order),
-        error =>
-        {
-            if (error is ValidationError validationError)
-            {
-                var errorsDict = validationError.Errors.ToDictionary(k => k.Key, v => v.Value);
-                return Results.ValidationProblem(
-                    errors: errorsDict,
-                    title: validationError.Message,
-                    detail: validationError.Code);
-            }
-
-            return Results.BadRequest(new { error.Code, error.Message });
-        });
+    return result.ToHttpResult(order => Results.Created($"/api/orders/{order.Id}", order));
 })
 .WithName("CreateOrder")
-.WithSummary("Cria um novo pedido com validação rica por campo (ValidationError) e disparo assíncrono via IEventProducer.");
+.WithSummary("Cria um novo pedido com validação rica por campo (ValidationError) e retorno automático de ProblemDetails.");
 
 ordersGroup.MapGet("/keyset", (
     [FromQuery] Guid? lastSeenId,
@@ -147,17 +131,10 @@ cqrsGroup.MapGet("/{id:guid}", async (
 {
     var query = new GetOrderByIdQuery(id);
     var result = await handler.HandleAsync(query, cancellationToken);
-
-    return result.Match(
-        order => Results.Ok(order),
-        error => error.Type switch
-        {
-            ErrorType.NotFound => Results.NotFound(new { error.Code, error.Message }),
-            _ => Results.BadRequest(new { error.Code, error.Message })
-        });
+    return result.ToHttpResult();
 })
 .WithName("CqrsGetOrderById")
-.WithSummary("Executa consulta desacoplada via IQuery e IQueryHandler.");
+.WithSummary("Executa consulta desacoplada via IQuery e IQueryHandler com ToHttpResult().");
 
 cqrsGroup.MapPost("/", async (
     [FromBody] CreateOrderRequest request,
@@ -166,25 +143,84 @@ cqrsGroup.MapPost("/", async (
 {
     var command = new CreateOrderCommand(request.CustomerEmail, request.TotalAmount, request.ItemDescription);
     var result = await handler.HandleAsync(command, cancellationToken);
-
-    return result.Match(
-        order => Results.Created($"/api/cqrs/orders/{order.Id}", order),
-        error =>
-        {
-            if (error is ValidationError validationError)
-            {
-                var errorsDict = validationError.Errors.ToDictionary(k => k.Key, v => v.Value);
-                return Results.ValidationProblem(
-                    errors: errorsDict,
-                    title: validationError.Message,
-                    detail: validationError.Code);
-            }
-
-            return Results.BadRequest(new { error.Code, error.Message });
-        });
+    return result.ToHttpResult(order => Results.Created($"/api/cqrs/orders/{order.Id}", order));
 })
 .WithName("CqrsCreateOrder")
-.WithSummary("Executa comando desacoplado via ICommand e ICommandHandler com validação.");
+.WithSummary("Executa comando desacoplado via ICommand e ICommandHandler com validação e ToHttpResult().");
+
+var contextGroup = app.MapGroup("/api/context").WithTags("Contexto e Multi-Tenancy (TL.BaseContracts.Context)");
+
+contextGroup.MapGet("/me", (
+    [FromServices] ICurrentUser currentUser,
+    [FromServices] ICurrentTenant currentTenant) =>
+{
+    return Results.Ok(new
+    {
+        userId = currentUser.Id ?? "anonimo",
+        email = currentUser.Email ?? "nao-informado",
+        roles = currentUser.Roles,
+        isAuthenticated = currentUser.IsAuthenticated,
+        tenantId = currentTenant.TenantId ?? "padrao",
+        hasTenant = currentTenant.HasTenant
+    });
+})
+.WithName("GetContextMe")
+.WithSummary("Inspeciona o usuário autenticado e tenant ativo no contexto atual.");
+
+var errorsGroup = app.MapGroup("/api/errors").WithTags("Respostas de Erro RFC 7807 (ToHttpResult)");
+
+errorsGroup.MapGet("/validation", () =>
+{
+    var failures = new Dictionary<string, string[]>
+    {
+        { "Documento", new[] { "CPF informado é inválido.", "Formato deve conter 11 dígitos numéricos." } },
+        { "LimiteCredito", new[] { "Limite de crédito excede o teto autorizado." } }
+    };
+    var validationError = ValidationError.FromFailures(failures, "Falha de validação dos dados cadastrais.", "Customer.InvalidData");
+    return Result.Failure(validationError).ToHttpResult();
+})
+.WithName("ErrorValidation")
+.WithSummary("Demonstra erro de validação (400 Bad Request) mapeado para RFC 7807.");
+
+errorsGroup.MapGet("/not-found", () =>
+{
+    var error = Error.NotFound("Resource.NotFound", "O recurso com identificador informado não foi localizado.");
+    return Result.Failure(error).ToHttpResult();
+})
+.WithName("ErrorNotFound")
+.WithSummary("Demonstra recurso não encontrado (404 Not Found) mapeado para RFC 7807.");
+
+errorsGroup.MapGet("/conflict", () =>
+{
+    var error = Error.Conflict("Order.AlreadyExists", "Já existe um pedido registrado com este identificador único.");
+    return Result.Failure(error).ToHttpResult();
+})
+.WithName("ErrorConflict")
+.WithSummary("Demonstra conflito de estado (409 Conflict) mapeado para RFC 7807.");
+
+errorsGroup.MapGet("/unauthorized", () =>
+{
+    var error = Error.Unauthorized("Auth.InvalidCredentials", "As credenciais informadas são inválidas ou o token expirou.");
+    return Result.Failure(error).ToHttpResult();
+})
+.WithName("ErrorUnauthorized")
+.WithSummary("Demonstra falha de autenticação (401 Unauthorized) mapeado para RFC 7807.");
+
+errorsGroup.MapGet("/forbidden", () =>
+{
+    var error = Error.Forbidden("Auth.ForbiddenScope", "O perfil associado não possui privilégios para executar esta ação.");
+    return Result.Failure(error).ToHttpResult();
+})
+.WithName("ErrorForbidden")
+.WithSummary("Demonstra acesso proibido (403 Forbidden) mapeado para RFC 7807.");
+
+errorsGroup.MapGet("/unexpected", () =>
+{
+    var error = Error.Failure("Database.Timeout", "Tempo limite de comunicação com o cluster de banco excedido.");
+    return Result.Failure(error).ToHttpResult();
+})
+.WithName("ErrorUnexpected")
+.WithSummary("Demonstra falha interna (500 Internal Server Error) mapeada para RFC 7807.");
 
 var resilienceGroup = app.MapGroup("/api/resilience").WithTags("Resiliência (TL.Resilience)");
 
@@ -238,29 +274,24 @@ middlewareGroup.MapGet("/cache", ([FromQuery] string? category) => Results.Ok(ne
 }))
 .WithSummary("Demonstra o cache em memória transparente para requisições GET idempotentes.");
 
+middlewareGroup.MapGet("/unhandled-crash", () =>
+{
+    throw new InvalidOperationException("Falha catastrófica simulada para validação do ExceptionHandlingMiddleware.");
+})
+.WithSummary("Dispara uma exceção não tratada para demonstrar a captura global de falhas e resposta RFC 7807.");
+
 middlewareGroup.MapGet("/validation-error", () =>
 {
     var failures = new Dictionary<string, string[]>
     {
-        { "Documento", new[] { "CPF informado é inválido.", "Formato deve conter 11 dígitos numéricos." } },
-        { "LimiteCredito", new[] { "Limite de crédito excede o teto autorizado de R$ 50.000,00." } }
+        { "Documento", new[] { "CPF informado é inválido." } },
+        { "LimiteCredito", new[] { "Limite de crédito excede o teto autorizado." } }
     };
     var validationError = ValidationError.FromFailures(failures, "Falha de validação dos dados cadastrais.", "Customer.InvalidData");
     throw new ValidationException(validationError);
 })
-.WithSummary("Demonstra resposta de erro RFC 7807 (400 Bad Request) com detalhamento por campo do ValidationError.");
+.WithSummary("Dispara uma ValidationException para demonstrar a formatação de BadRequest com mapeamento de campos.");
 
-middlewareGroup.MapGet("/not-found-error", () =>
-{
-    throw new NotFoundException("O recurso solicitado com identificador informado não foi localizado.");
-})
-.WithSummary("Demonstra resposta de erro RFC 7807 (404 Not Found) capturada pelo StatusCodeMiddleware.");
-
-middlewareGroup.MapGet("/unhandled-crash", () =>
-{
-    throw new InvalidOperationException("Simulação de falha catastrófica não tratada capturada pelo ExceptionHandlingMiddleware.");
-})
-.WithSummary("Demonstra fallback global RFC 7807 (500 Internal Server Error) com Correlation ID.");
 
 app.Run();
 
